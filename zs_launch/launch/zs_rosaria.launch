@@ -1,0 +1,18 @@
+<launch>
+  <arg name="urdf" default="$(find amr_robots_description)/urdf/pioneer3at.urdf" />
+  <param name="robot_description" textfile="$(arg urdf)" />
+  <node pkg = "rosaria" type = "RosAria" name = "RosAria">
+    <param name="port" 						value="/dev/ttyUSB0" type="string"/>
+    <param name="publish_aria_lasers" 		value="true"/>
+    <param name="sonar_enabled" 			value="true"/>
+    <param name="publish_sonar" 			value="true"/>
+    <param name="publish_sonar_pointcloud2" value="true"/>
+    <param name="zsstart_pose_x"			value="0.0"/>
+    <param name="zsstart_pose_y"			value="0.0"/>
+    <param name="zsstart_pose_th"			value="0.0"/>
+    <!-- zs: the th value equals to the rotation degreen from world frame to odom frame-->
+    <!-- zs: default is "-90" when using map columbia -->
+  </node>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+</launch>

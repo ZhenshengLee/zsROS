@@ -1,0 +1,6 @@
+<launch>
+  <arg name="urdf" default="$(find amr_robots_description)/urdf/pioneer3at.urdf" />
+  <arg name="joint_state_gui" default="False" />
+  <param name="robot_description" textfile="$(arg urdf)" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find zs_launch_files)/rviz/zsRViz.rviz" required="true" />
+</launch>

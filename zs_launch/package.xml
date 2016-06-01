@@ -1,0 +1,9 @@
+<package>
+  <name>zs_launch_files</name>
+  <version>1.0.0</version>
+  <description>Example launch files for use with rosaria, move_base and Adept MobileRobots P3-AT</description>
+  <maintainer email="zhensheng@outlook.com">Li Zhensheng</maintainer> 
+  <url type="website">http://github</url>
+  <license>BSD</license>
+  <run_depend>roslaunch</run_depend>
+</package>

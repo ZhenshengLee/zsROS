@@ -1,0 +1,6 @@
+<launch>
+  <!-- zs: Launch the fake localization package with no map-->
+  <!-- zs: Use fake localization instead-->
+  <include file="$(find rosaria_client)/zsLaunch/launch/includes/fake_amcl.launch.xml" />
+</launch>
+

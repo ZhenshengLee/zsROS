@@ -1,0 +1,29 @@
+# Move base node parameters. For full documentation of the parameters in this file, please see
+#
+#  http://www.ros.org/wiki/move_base
+#
+shutdown_costmaps: false
+
+controller_frequency: 5.0
+controller_patience: 3.0
+
+planner_frequency: 1.0
+planner_patience: 5.0
+
+oscillation_timeout: 30.0
+oscillation_distance: 0.2
+
+# local planner - default is trajectory rollout
+# zs: will use default local planner: base_local_planner/TrajectoryPlannerROS
+
+#base_local_planner: "dwa_local_planner/DWAPlannerROS"
+
+# zs: will use a global planner
+base_global_planner: "global_planner/GlobalPlanner"
+
+# ROS_INFO("zs: ");
+# ROS_WARN("zs: ");
+# ROS_DEBUG_COND(x < 0, "Uh oh, x = %d, this is bad", x);
+# ROS_DEBUG_STREAM_COND(x < 0, "Uh oh, x = " << x << ", this is bad");
+# ROS_DEBUG_COND_NAMED(x < 0, "test_only", "Uh oh, x = %d, this is bad", x);
+# ROS_DEBUG_STREAM_COND_NAMED(x < 0, "test_only", "Uh oh, x = " << x << ", this is bad");

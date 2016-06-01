@@ -1,0 +1,10 @@
+<launch>
+  <!-- zs: use fake_acml-->
+  <node pkg="fake_localization" type="fake_localization" name="fake_localization" output="screen">
+    <param name="odom_frame_id"           value="odom" />
+    <param name="global_frame_id"         value="zsworld_frame" />
+    <param name="base_frame_id"           value="base_link" />
+    <remap from="base_pose_ground_truth"  to="RosAria/pose" />
+    <!--<remap from="tf_static"               to="tf" />-->
+  </node>
+</launch>

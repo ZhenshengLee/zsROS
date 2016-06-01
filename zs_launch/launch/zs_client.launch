@@ -1,0 +1,6 @@
+<launch>
+	<node pkg="rosaria_client" type="interface" name="RosAria_interface" output="screen">
+		<param name="use_sim" 					value="true"/>
+	</node>
+
+</launch>

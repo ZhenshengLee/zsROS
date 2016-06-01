@@ -1,0 +1,21 @@
+<launch>
+  <master auto="start"/>
+
+  <!-- Launch the p3at_rviz environment -->
+  <!-- <include file="$(find zs_launch_files)/launch/zs_p3at_rviz.launch" /> -->
+
+  <!-- Launch the zs version of rosaria -->
+  <include file="$(find zs_launch_files)/launch/zs_rosaria.launch" />
+
+  <!-- Launch the client program-->
+  <include file="$(find zs_launch_files)/launch/zs_client.launch" />
+
+  <!-- Launch the fake_acml module -->
+  <!-- zs: to avoid the error TF multiple authority contention-->
+  <!--<include file="$(find zs_launch_files)/launch/fake_amcl.launch" />-->
+
+  <!-- Launch the zs version of move base module-->
+  <!-- <include file="$(find zs_launch_files)/launch/zs_move_base.launch" /> -->
+
+
+</launch>
