@@ -1,3 +1,9 @@
+####修改说明
+
+* 添加了发送move_base 相关消息的代码，方便进行实验，确认系统功能
+
+####原说明
+
 #This is the [Rosaria](http://wiki.ros.org/ROSARIA) Demo Client
 This package is a series of simple demos meant to demonstrate how the robot is controlled in both ROS and Mobile Robots's [Aria](http://robots.mobilerobots.com/wiki/ARIA) 
 
