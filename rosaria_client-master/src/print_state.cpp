@@ -10,6 +10,8 @@
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/PointCloud2.h>
 
+#include <std_msgs/String>
+
 int battery_msg_count = 0, bumper_msg_count = 0;
 
 /* checks pose messages and outputs them to user */
@@ -101,6 +103,11 @@ void sonarpointcloud2MessageReceived(const sensor_msgs::PointCloud2 msg)
 {
 //	ROS_INFO_STREAM("zzzzzzzzzzzzsonar");
 }
+
+void stringMsgReceived(const std_msgs::String msg)
+{
+	ROS_INFO_STREAM("We got string msg :" << msg);
+}
 /* call all of the functions implemented above and provide user with robot state info */
 int main(int argc, char **argv)
 {
@@ -111,6 +118,9 @@ int main(int argc, char **argv)
 	nh.param("use_sim", use_sim, true);
 	// Create a subscriber object .
 	ros::Subscriber pose, bumper_state, battery_voltage, battery_charge_state, motors_state;
+	ros::Subscriber stringListener;
+	stringListener = nh.subscribe("/chatter", 100, &stringMsgReceived);
+	
 	pose = nh.subscribe("RosAria/pose", 1000, &poseMessageReceived) ; //supply pose
 //	bumper_state = nh.subscribe("RosAria/bumper_state", 1000, &bumperStateMessageReceived) ; //inform bumper state
 //	battery_state_of_charge = nh.subscribe("RosAria/bumper_state_of_charge", 1000, &batteryStateOfChargeMessageReceived) ; //inform state of charge
