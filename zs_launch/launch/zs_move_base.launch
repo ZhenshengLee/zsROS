@@ -1,6 +1,5 @@
 <launch>
     <!-- zs: Launch the zs version of move base modules-->
     <!-- zs: Use fake localization -->
-    <master auto="start"/>
     <include file="$(find zs_launch_files)/includes/move_base.launch.xml"/>
 </launch>

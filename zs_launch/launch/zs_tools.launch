@@ -1,6 +1,0 @@
-<launch>
-	<master auto="start"/>
-	
-	<node name="zs_tools" pkg="zs_launch_files" type="zs_tools.launch.sh" />
-
-</launch>
