@@ -10,7 +10,7 @@
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/PointCloud2.h>
 
-#include <std_msgs/String>
+#include <std_msgs/String.h>
 
 int battery_msg_count = 0, bumper_msg_count = 0;
 
