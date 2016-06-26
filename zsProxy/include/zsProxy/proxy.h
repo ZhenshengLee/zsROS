@@ -15,14 +15,14 @@
 #include <signal.h>
 
 namespace zs_proxy{
-    typedef actionlib::SimpleActionServer<move_base_msgs::MoveBaseAction> MoveBaseActionClient;
+    typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseActionClient;
 
     class Proxy{
         public:
         Proxy();// TODO:
         
         private:
-        bool cancelMoveBaseCB(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
+        bool cancelGoalCB(std_srvs::Empty::Request &req, std_srvs::Empty::Response &resp);
         bool reconfigParameterCB(const geometry_msgs::Pose& param);
-    }
+    };
 }
