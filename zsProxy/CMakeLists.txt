@@ -6,17 +6,16 @@ project(zsProxy)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  std_msgs
+  message_generation
+  std_msgs nav_msgs geometry_msgs sensor_msgs
+  genmsg actionlib_msgs actionlib # for actionlib
+  dynamic_reconfigure
+  rosaria move_base # 也许只要直接包含这两个就可以了
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-
-
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and global scripts declared therein get installed
-## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+find_package(Boost REQUIRED COMPONENTS system) # 需要调用操作系统函数
+# 在后面包含目录
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -101,8 +100,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES zsProxy
-#  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp std_msgs message_runtime
+# DEPENDS system_lib
 )
 
 ###########
@@ -114,6 +113,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -126,17 +126,17 @@ include_directories(
 ## either from message generation or dynamic reconfigure
 # add_dependencies(zsProxy ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Declare a C++ executable
-# add_executable(zsProxy_node src/zsProxy_node.cpp)
+# Declare a C++ executable
+add_executable(zsProxy_node src/Proxy_node.cpp src/Proxy.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(zsProxy_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(zsProxy_node
-#   ${catkin_LIBRARIES}
-# )
+# Specify libraries to link a library or executable target against
+target_link_libraries(zsProxy_node
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

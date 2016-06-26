@@ -1,9 +1,15 @@
+# 编辑器的配置文件
 .vscode/
+# 这个文件有点用，不过这句话并没有产生期望的效果
+!.vscode/c_cpp_properties.json
+# 也是编辑器的配置文件
 .idea/
+# 项目中曾经修改过导航包，后来又没有修改
 navigation-indigo-devel/
 
 
 
+# 使用方法
 # 此为注释 – 将被 Git 忽略
 # 忽略所有 .a 结尾的文件
 # *.a
