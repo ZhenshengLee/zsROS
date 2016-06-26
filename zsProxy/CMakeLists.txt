@@ -116,10 +116,10 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(zsProxy
-#   src/${PROJECT_NAME}/zsProxy.cpp
-# )
+# Declare a C++ library
+add_library(zsProxy
+  src/proxy.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -127,7 +127,7 @@ include_directories(
 # add_dependencies(zsProxy ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 # Declare a C++ executable
-add_executable(zsProxy_node src/Proxy_node.cpp src/Proxy.cpp)
+add_executable(zsProxy_node src/proxy_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -135,8 +135,10 @@ add_executable(zsProxy_node src/Proxy_node.cpp src/Proxy.cpp)
 
 # Specify libraries to link a library or executable target against
 target_link_libraries(zsProxy_node
+  zsProxy
   ${catkin_LIBRARIES}
 )
+set_target_properties(zsProxy_node PROPERTIES OUTPUT_NAME zsProxy)
 
 #############
 ## Install ##
