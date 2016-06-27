@@ -15,8 +15,8 @@ namespace zs_proxy{
 	{
 		ac_ = new MoveBaseActionClient("move_base", false);
 		ros::NodeHandle nh_;
-		cancel_goal_srv_ = nh_.advertiseService("cancel_goal", &Proxy::cancelGoalCB, this);
-		zs_pose_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_pose", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&Proxy::reconfigParameterCB, this, _1 ));
+		cancel_goal_srv_ = nh_.advertiseService("zs/cancel_goal", &Proxy::cancelGoalCB, this);
+		zs_pose_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs/zs_pose", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&Proxy::reconfigParameterCB, this, _1 ));
 	}
 
 	bool Proxy::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){

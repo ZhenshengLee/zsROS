@@ -21,15 +21,21 @@ public:
     void keyLoop();
 private:
     ros::NodeHandle nh_;
-//    double linear_, angular_, l_scale_, a_scale_;
     double x_offset_;
     ros::Publisher pose_pub_;
+    ros::ServiceClient cancel_goal_srv_client_;
+    std_srvs::Empty srv_;
+    ros::Publisher zs_pose_pub_;
+    geometry_msgs::Pose pose_;
 };
 zsGoalPubRosAria::zsGoalPubRosAria():
-        x_offset_(1.0)
+        x_offset_(1.0),
+        srv_(),
 {
     nh_.param("x_offset", x_offset_, x_offset_);
     pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1);
+    cancel_goal_srv_client_ = nh_.serviceClient<std_srvs::Empty>("zs/cancel_goal");
+    zs_pose_pub_ = nh_.advertise<geometry_msgs::Pose>("zs/zs_pose", 1);
 }
 int kfd = 0;
 struct termios cooked, raw;
@@ -77,12 +83,9 @@ void zsGoalPubRosAria::keyLoop()
         ROS_DEBUG("value: 0x%02X\n", c);
         switch(c)
         {
-//            case KEYCODE_L:
-////                ROS_DEBUG("LEFT");
-////                angular_ = 0.1;
-////                linear_ = 0;
-////                dirty = true;
-////                break;
+        //    case KEYCODE_L:
+        //         ROS_DEBUG("LEFT");
+        //        break;
             case KEYCODE_R:
                 ROS_DEBUG("RIGHT");
 //                x_offset_ += 0.5;
@@ -93,12 +96,18 @@ void zsGoalPubRosAria::keyLoop()
 //            case KEYCODE_U:
 //
 //                break;
-//            case KEYCODE_D:
-//
-//                break;
-//            case KEYCODE_SPACE:
-//
-//                break;
+            case KEYCODE_D:
+                pose_.position.x = 3;
+                pose_.position.y = 3;
+                tf::quaternionTFToMsg(tf::createQuaternionFromYaw(90*M_PI/180), pose_.orientation);
+                break;
+            case KEYCODE_SPACE:
+                ROS_INFO("zs: You push the SPACE button!");
+                if (cancel_goal_srv_client_.call(srv))
+                {
+                    ROS_INFO("zs: send cancel_goal service!");
+                }
+                break;
             case KEYCODE_Q:
                 ROS_DEBUG("QUIT");
                 ROS_INFO_STREAM("You quit the program successfully");
