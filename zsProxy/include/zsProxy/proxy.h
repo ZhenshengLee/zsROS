@@ -13,6 +13,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sstream>
 
 namespace zs_proxy{
     typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseActionClient;

@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs nav_msgs geometry_msgs sensor_msgs
   genmsg actionlib_msgs actionlib # for actionlib
   dynamic_reconfigure
-  rosaria move_base # 也许只要直接包含这两个就可以了
+  rosaria move_base move_base_msgs# 也许只要直接包含这两个就可以了
 )
 
 ## System dependencies are found with CMake's conventions
@@ -100,7 +100,7 @@ find_package(Boost REQUIRED COMPONENTS system) # 需要调用操作系统函数
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES zsProxy
-  CATKIN_DEPENDS roscpp std_msgs message_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 # DEPENDS system_lib
 )
 

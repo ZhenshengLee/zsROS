@@ -19,6 +19,17 @@ namespace zs_proxy{
 		return true;
 	}
 	Proxy::reconfigParameterCB(const geometry_msgs::Pose& param){
-//		TODO:
+		param.
+		system("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x 3");
+		system("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y 3");
+		system("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th 3");
+		
+
 	}
 }
+// int main(){  
+// 　　double   d=123.456;   
+// 　　string   str;   
+// 　　stringstream   ss;   
+// 　　ss<<d;   
+// 　　ss>>str;  
