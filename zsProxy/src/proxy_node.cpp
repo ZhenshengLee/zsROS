@@ -1,6 +1,6 @@
 //Author: Li Zhensheng
 
-# include <proxy/proxy.h>
+# include "proxy.h"
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "zs_proxy_node");
