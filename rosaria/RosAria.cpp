@@ -190,9 +190,6 @@ void RosAriaNode::readParameters()
 
 void RosAriaNode::dynamic_reconfigureCB(rosaria::RosAriaConfig &config, uint32_t level)
 {
-  //
-  // Odometry Settings
-  //
   // zs: 修改机器人的全局坐标
   if(zsstart_pose_x != config.zsstart_pose_x)
   {
@@ -209,6 +206,9 @@ void RosAriaNode::dynamic_reconfigureCB(rosaria::RosAriaConfig &config, uint32_t
     ROS_INFO("Setting zsstart_pose_th from Dynamic Reconfigure: %d -> %d ", zsstart_pose_th, config.zsstart_pose_th);
     zsstart_pose_th = config.zsstart_pose_th;
   }
+  //
+  // Odometry Settings
+  //
   robot->lock();
   if(TicksMM != config.TicksMM and config.TicksMM > 0)
   {
