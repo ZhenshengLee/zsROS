@@ -25,9 +25,10 @@ class ProxyNode{
     private:
         bool cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
         void reconfigParameterCB(const geometry_msgs::Pose& param);
-        // void doubletostring(const double data);
+		void sendGoalCB(const geometry_msgs::Pose& goal);
         MoveBaseActionClient* ac_;
         ros::Subscriber zs_pose_sub_;
+		ros::Subscriber zs_goal_sub_;
         ros::ServiceServer cancel_goal_srv_;
         ros::NodeHandle nh_;
         double start_pose_x_;
@@ -36,6 +37,7 @@ class ProxyNode{
         std::string start_pose_x_str_;
         std::string start_pose_y_str_;
         std::string start_pose_th_str_;
+		move_base_msgs::MoveBaseGoal goal_;
 };
 
 ProxyNode::ProxyNode(ros::NodeHandle n):
@@ -54,23 +56,35 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	
 	cancel_goal_srv_ = nh_.advertiseService("cancel_goal", &ProxyNode::cancelGoalCB, this);
 	zs_pose_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_pose", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::reconfigParameterCB, this, _1 ));
-	// zs_pose_sub_ = nh_.subscribe("zs_pose", 1, &ProxyNode::reconfigParameterCB);
+	zs_goal_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_goal", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::sendGoalCB, this, _1 ));
 }
 bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){
 	ROS_INFO("cancelGoalCB");
 	ac_->cancelGoal();
 	return true;
 }
+void ProxyNode::sendGoalCB(const geometry_msgs::Pose& goal){
+	goal_.target_pose.header.frame_id = "odom";
+  	goal_.target_pose.header.stamp = ros::Time::now();
+	goal_.target_pose.pose = goal;
+  	ROS_INFO("Sending goal");
+  	ac_->sendGoal(goal_);
+}
 void ProxyNode::reconfigParameterCB(const geometry_msgs::Pose& param){
-	// 将double转为string
+	// 将double转为string，在C++11中可以应用新标准，也可以使用boost库，此处使用C++03标准
+	// C++11:	std::string varAsString = std::to_string(myDoubleVar);
+	// boost:	std::string str = boost::lexical_cast<std::string>(dbl);
 	ROS_INFO("reconfigParameterCB...");
-	std::stringstream ss;
-	ss << param.position.x;
-	ss >> start_pose_x_str_;
-	ss << param.position.y;
-	ss >> start_pose_y_str_;
-	ss << tf::getYaw(param.orientation);
-	ss >> start_pose_th_str_;
+	std::stringstream ss_x, ss_y, ss_th;
+	ss_x << param.position.x;
+	ss_x >> start_pose_x_str_;
+	ss_y << param.position.y;
+	ss_y >> start_pose_y_str_;
+	ss_th << tf::getYaw(param.orientation);
+	ss_th >> start_pose_th_str_;
+	// ROS_INFO(start_pose_x_str_.c_str());
+	// ROS_INFO(start_pose_y_str_.c_str());
+	// ROS_INFO(start_pose_th_str_.c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());

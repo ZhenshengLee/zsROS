@@ -96,7 +96,7 @@ void pointcloudMessageReceived(const sensor_msgs::PointCloud msg)
 
 void sonarMessageReceived(const sensor_msgs::PointCloud msg)
 {
-//	ROS_INFO_STREAM("zzzzzzzzzzzzsonar");
+	// ROS_INFO_STREAM("zzzzzzzzzzzzsonar");
 }
 
 void sonarpointcloud2MessageReceived(const sensor_msgs::PointCloud2 msg)
