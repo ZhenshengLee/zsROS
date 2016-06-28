@@ -15,7 +15,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sstream>
-// #include <stream>
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseActionClient;
 
@@ -50,8 +49,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	start_pose_y_str_(""),
 	start_pose_th_str_("")
 {
-	std::cout << "zs_proxy constructing";
-	ROS_INFO("zs_proxy constructing...");
+	// ROS_INFO("zs_proxy constructing...");
 	ac_ = new MoveBaseActionClient("move_base", false);
 	
 	cancel_goal_srv_ = nh_.advertiseService("cancel_goal", &ProxyNode::cancelGoalCB, this);
@@ -82,7 +80,7 @@ int main(int argc, char** argv){
     ros::init(argc, argv, "zsProxy");
 	ros::NodeHandle n(std::string("~"));
     ProxyNode proxy(n);
-    ROS_INFO("zs: zs_proxy ini...");
+    // ROS_INFO("zs: zs_proxy ini...");
     ros::spin();
 
     return 0;
