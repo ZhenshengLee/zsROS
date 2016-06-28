@@ -1,4 +1,4 @@
 <launch>
-	<node pkg="zsProxy" type="interface" name="zs_Proxy" output="screen">
+	<node pkg="zsProxy" type="zsProxy" name="zsProxy" output="screen">
 	</node>
 </launch>

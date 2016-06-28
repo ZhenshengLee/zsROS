@@ -120,8 +120,8 @@ int main(int argc, char **argv)
 	ros::Subscriber pose, bumper_state, battery_voltage, battery_charge_state, motors_state;
 	ros::Subscriber stringListener;
 	stringListener = nh.subscribe("/chatter", 100, &stringMsgReceived);
-	
-	pose = nh.subscribe("RosAria/pose", 1000, &poseMessageReceived) ; //supply pose
+	// zs:
+	pose = nh.subscribe("RosAria/zs_pose", 1000, &poseMessageReceived) ; //supply pose
 //	bumper_state = nh.subscribe("RosAria/bumper_state", 1000, &bumperStateMessageReceived) ; //inform bumper state
 //	battery_state_of_charge = nh.subscribe("RosAria/bumper_state_of_charge", 1000, &batteryStateOfChargeMessageReceived) ; //inform state of charge
 	battery_voltage = nh.subscribe("RosAria/battery_voltage", 1000, &batteryVoltageMessageReceived) ; //inform battery voltage level
