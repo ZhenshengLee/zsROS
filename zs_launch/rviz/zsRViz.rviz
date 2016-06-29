@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5625
     Tree Height: 487
@@ -67,7 +68,7 @@ Visualization Manager:
         front_sonar:
           Value: false
         laser_frame:
-          Value: true
+          Value: false
         odom:
           Value: false
         p3at_back_left_axle:
@@ -98,7 +99,7 @@ Visualization Manager:
           Value: false
         zsworld_frame:
           Value: true
-      Marker Scale: 0.2
+      Marker Scale: 5
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -136,109 +137,29 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        back_sonar:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        front_sonar:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_left_axle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_left_hub:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_right_axle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_right_hub:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_back_right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_left_axle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_left_hub:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_left_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_right_axle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_right_hub:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        p3at_front_right_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top_plate:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Angle Tolerance: 0.1
       Class: rviz/Odometry
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Keep: 100
       Length: 0.5
       Name: Odometry
       Position Tolerance: 0.1
       Topic: /RosAria/pose
-      Value: true
+      Value: false
     - Class: rviz/Group
       Displays:
         - Alpha: 1
@@ -521,22 +442,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 11.5178
+      Distance: 9.19158
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.01526
-        Y: 0.519636
-        Z: -0.378551
+        X: 2.67435
+        Y: 3.02345
+        Z: 0.280981
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.839797
+      Pitch: 1.1548
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.61858
+      Yaw: 4.58859
     Saved:
       - Class: rviz/Orbit
         Distance: 10.7231
@@ -573,5 +494,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1383
-  X: 1986
-  Y: 17
+  X: 55
+  Y: 14
