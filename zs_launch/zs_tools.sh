@@ -12,8 +12,8 @@ rqt_console &
 # zs: MUST RUN roscore HERE; DO NOT RUN MASTER AUTOMATICALLY
 # echo "Launching roscore"
 # roscore &
-# echo "Launching RViz"
-# roslaunch zs_launch_files zs_p3at_rviz.launch
+echo "Launching RViz"
+roslaunch zs_launch_files zs_p3at_rviz.launch
 echo "Finishing!"
 
 # roslaunch zs_launch_files zs_rosaria.launch
