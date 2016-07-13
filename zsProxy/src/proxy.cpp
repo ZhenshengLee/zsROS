@@ -64,7 +64,7 @@ bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Res
 	return true;
 }
 void ProxyNode::sendGoalCB(const geometry_msgs::Pose& goal){
-	goal_.target_pose.header.frame_id = "odom";
+	goal_.target_pose.header.frame_id = "zsworld_frame";//odom
   	goal_.target_pose.header.stamp = ros::Time::now();
 	goal_.target_pose.pose = goal;
   	ROS_INFO("Sending goal");
