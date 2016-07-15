@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sstream>
+#include <std_msgs/Bool.h>
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseActionClient;
 
@@ -26,6 +27,8 @@ class ProxyNode{
         bool cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
         void reconfigParameterCB(const geometry_msgs::Pose& param);
 		void sendGoalCB(const geometry_msgs::Pose& goal);
+		void canelGoalMsgCB(const std_msgs::Bool trigger);
+
         MoveBaseActionClient* ac_;
         ros::Subscriber zs_pose_sub_;
 		ros::Subscriber zs_goal_sub_;
@@ -38,6 +41,7 @@ class ProxyNode{
         std::string start_pose_y_str_;
         std::string start_pose_th_str_;
 		move_base_msgs::MoveBaseGoal goal_;
+		ros::Subcriber cancel_goal_sub_;
 };
 
 ProxyNode::ProxyNode(ros::NodeHandle n):
@@ -57,11 +61,18 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	cancel_goal_srv_ = nh_.advertiseService("cancel_goal", &ProxyNode::cancelGoalCB, this);
 	zs_pose_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_pose", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::reconfigParameterCB, this, _1 ));
 	zs_goal_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_goal", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::sendGoalCB, this, _1 ));
+	cancel_goal_sub_ = nh_.subscribe<std_msgs::Bool>("zs_cancel", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::cancelGoalMsgCB, this, _1 ));
 }
 bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){
 	ROS_INFO("cancelGoalCB");
 	ac_->cancelGoal();
 	return true;
+}
+void canelGoalMsgCB(const std_msgs::Bool trigger){
+	if(trigger){
+		ROS_INFO(cancelGoalMsgCB);
+		ac_->cancelGoal();
+	}
 }
 void ProxyNode::sendGoalCB(const geometry_msgs::Pose& goal){
 	goal_.target_pose.header.frame_id = "zsworld_frame";//odom
