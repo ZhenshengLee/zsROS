@@ -5,7 +5,14 @@ echo "Let's enjoy with some useful tools!"
 echo "Sourcing .bashrc file"
 source ~/.bashrc
 echo "Launching MobileSim with the default map"
-/usr/local/MobileSim/MobileSim -m $PWD/zs_tools/columbia.map -r p3at &
+# if[$1 = "1"]
+# then
+# /usr/local/MobileSim/MobileSim -m $PWD/zs_tools/cmee.map -r p3at &
+# else
+# /usr/local/MobileSim/MobileSim -m $PWD/zs_tools/columbia.map -r p3at &
+# fi
+/usr/local/MobileSim/MobileSim -m $PWD/zs_tools/$1.map -r p3at &
+# /usr/local/MobileSim/MobileSim -m $PWD/zs_tools/columbia.map -r p3at &
 # /usr/local/MobileSim/MobileSim -m $PWD/zs_tools/cmee.map -r p3at &
 echo "Launching rqt_tools"
 rqt_graph &
