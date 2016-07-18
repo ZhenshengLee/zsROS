@@ -7,7 +7,7 @@ Panels:
         - /TF1/Frames1
         - /local_planner_Group1
       Splitter Ratio: 0.5625
-    Tree Height: 487
+    Tree Height: 359
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -26,7 +26,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: sim_lm2xx_LaserScan
+    SyncSource: ""
   - Class: rviz/Tool Properties
     Expanded:
       - /2D Nav Goal1
@@ -458,15 +458,15 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 9.03452
+      Distance: 15.4667
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.59402
-        Y: 5.21488
+        X: -0.205608
+        Y: -3.23684
         Z: -2.02299e-07
       Name: Current View
       Near Clip Distance: 0.01
@@ -510,5 +510,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 767
-  X: 2742
+  X: 2732
   Y: 14
