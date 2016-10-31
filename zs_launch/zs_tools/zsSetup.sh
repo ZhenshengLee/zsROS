@@ -27,6 +27,8 @@ source devel/setup.bash
 # Install missing ROS packages
 echo "Installing some missing ROS packages..."
 sudo apt-get install -y ros-indigo-ros-control ros-indigo-ros-controllers ros-indigo-joystick-drivers ros-indigo-navigation
+# echo "Installing some missing ROS packages... for kinetic"
+# sudo apt-get install -y ros-kinetic-ros-control ros-kinetic-ros-controllers ros-kinetic-joystick-drivers ros-kinetic-navigation
 
 # Install Gazebo
 echo "Installing and setting up Gazebo..."
@@ -38,5 +40,7 @@ sudo apt-get install -y ros-indigo-gazebo-ros-pkgs ros-indigo-gazebo-ros-control
 # Setup ROS dependencies
 echo "Setting up ROS dependencies..."
 rosdep install robot_state_publisher urdf xacro controller_manager geometry_msgs joy ros_control ros_controllers sensor_msgs std_msgs gazebo_msgs gazebo_plugins gazebo_ros gazebo_ros_control joy
+# for kinetic to check if packages have been installed
+# rosdep install robot_state_publisher urdf xacro controller_manager geometry_msgs joy ros_control ros_controllers sensor_msgs std_msgs gazebo_msgs gazebo_plugins gazebo_ros  joy
 
 echo "Finishing..."

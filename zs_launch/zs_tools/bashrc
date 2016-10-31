@@ -116,7 +116,7 @@ fi
 # ROS zsROS_ws
 # If you have versions of ROS, please comment next line and manually execute that command every time
 source /opt/ros/indigo/setup.bash
-export EDITOR=﻿'subl'
+export EDITOR='subl'
 # source /home/zs/Downloads/TestingPackages/sim_ws/devel/setup.bash
 
 # For multipule machine name resolution
@@ -134,7 +134,6 @@ export EDITOR=﻿'subl'
 
 # ROS Testing Packages
 export ROS_WORKSPACE=/home/zs/Downloads/TestingPackages/sim_ws
-
 export ROS_PACKAGE_PATH=${ROS_WORKSPACE}:${ROS_PACKAGE_PATH}
 
 # to find the new executable, you have to update the config and source the setup.bash in your catkin_ws
