@@ -1,14 +1,9 @@
 <launch>
-<<<<<<< HEAD
-  <!-- Launch the p3at_rviz environment -->
-  <!-- <include file="$(find zs_launch_files)/launch/zs_p3at_rviz.launch" /> -->
 
-=======
   <!-- FOR SIMULATOR ONLY!-->
   <!-- Launch this file before running zs_tools.sh-->
   <!--<master auto="start"/>-->
   
->>>>>>> link-rosforlv
   <!-- Launch the zs version of rosaria -->
   <include file="$(find zs_launch_files)/launch/zs_rosaria.launch" />
 
