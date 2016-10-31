@@ -1,0 +1,7 @@
+<launch>
+	<node pkg="zsProxy" type="zsProxy" name="zsProxy" output="screen">
+		<remap from="/zsProxy/zs_pose"  to="/zs_pose" />
+		<remap from="/zsProxy/zs_goal"	to="/zs_goal" />
+		<remap from="/zsProxy/zs_cancel" to="/zs_cancel" />
+	</node>
+</launch>

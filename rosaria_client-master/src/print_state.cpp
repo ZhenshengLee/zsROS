@@ -10,7 +10,11 @@
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/PointCloud2.h>
 
+<<<<<<< HEAD
 #include <std_msgs/String>
+=======
+#include <std_msgs/String.h>
+>>>>>>> link-rosforlv
 
 int battery_msg_count = 0, bumper_msg_count = 0;
 
@@ -96,7 +100,7 @@ void pointcloudMessageReceived(const sensor_msgs::PointCloud msg)
 
 void sonarMessageReceived(const sensor_msgs::PointCloud msg)
 {
-//	ROS_INFO_STREAM("zzzzzzzzzzzzsonar");
+	// ROS_INFO_STREAM("zzzzzzzzzzzzsonar");
 }
 
 void sonarpointcloud2MessageReceived(const sensor_msgs::PointCloud2 msg)
@@ -120,8 +124,13 @@ int main(int argc, char **argv)
 	ros::Subscriber pose, bumper_state, battery_voltage, battery_charge_state, motors_state;
 	ros::Subscriber stringListener;
 	stringListener = nh.subscribe("/chatter", 100, &stringMsgReceived);
+<<<<<<< HEAD
 	
 	pose = nh.subscribe("RosAria/pose", 1000, &poseMessageReceived) ; //supply pose
+=======
+	// zs:
+	pose = nh.subscribe("RosAria/zs_pose", 1000, &poseMessageReceived) ; //supply pose
+>>>>>>> link-rosforlv
 //	bumper_state = nh.subscribe("RosAria/bumper_state", 1000, &bumperStateMessageReceived) ; //inform bumper state
 //	battery_state_of_charge = nh.subscribe("RosAria/bumper_state_of_charge", 1000, &batteryStateOfChargeMessageReceived) ; //inform state of charge
 	battery_voltage = nh.subscribe("RosAria/battery_voltage", 1000, &batteryVoltageMessageReceived) ; //inform battery voltage level

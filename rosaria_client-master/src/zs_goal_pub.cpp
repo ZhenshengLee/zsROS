@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <termios.h>
 #include <stdio.h>
+#include "std_srvs/Empty.h"
 
 #define KEYCODE_R 0x43
 #define KEYCODE_L 0x44
@@ -21,15 +22,24 @@ public:
     void keyLoop();
 private:
     ros::NodeHandle nh_;
-//    double linear_, angular_, l_scale_, a_scale_;
     double x_offset_;
     ros::Publisher pose_pub_;
+    ros::Publisher goal_pub_;
+    ros::ServiceClient cancel_goal_srv_client_;
+    std_srvs::Empty srv_;
+    ros::Publisher zs_pose_pub_;
+    geometry_msgs::Pose pose_;
 };
 zsGoalPubRosAria::zsGoalPubRosAria():
-        x_offset_(1.0)
+        x_offset_(1.0),
+        srv_()
 {
+    std::cout << "zsGoalPubRosAria constructing..." << std::endl;
     nh_.param("x_offset", x_offset_, x_offset_);
     pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1);
+    cancel_goal_srv_client_ = nh_.serviceClient<std_srvs::Empty>("/zsProxy/cancel_goal");
+    zs_pose_pub_ = nh_.advertise<geometry_msgs::Pose>("zs_pose", 1);
+    goal_pub_ = nh_.advertise<geometry_msgs::Pose>("zs_goal", 1);
 }
 int kfd = 0;
 struct termios cooked, raw;
@@ -62,8 +72,8 @@ void zsGoalPubRosAria::keyLoop()
     puts("Reading from keyboard");
     puts("---------------------------");
     puts("Use arrow keys to move the robot.");
-    puts("ONLY support right arrows");
-//    puts("Press the space bar to stop the robot.");
+    puts("Use Space key to stop the moving.");
+    puts("Use Left key to change the framework");
     puts("Press q to stop the program");
     for(;;)
     {
@@ -77,12 +87,13 @@ void zsGoalPubRosAria::keyLoop()
         ROS_DEBUG("value: 0x%02X\n", c);
         switch(c)
         {
-//            case KEYCODE_L:
-////                ROS_DEBUG("LEFT");
-////                angular_ = 0.1;
-////                linear_ = 0;
-////                dirty = true;
-////                break;
+           case KEYCODE_L:
+                ROS_INFO("You push the left key");
+                pose_.position.x = 3.14;
+                pose_.position.y = 3.14;
+                tf::quaternionTFToMsg(tf::createQuaternionFromYaw(90*M_PI/180), pose_.orientation);
+                zs_pose_pub_.publish(pose_);
+                break;
             case KEYCODE_R:
                 ROS_DEBUG("RIGHT");
 //                x_offset_ += 0.5;
@@ -93,32 +104,41 @@ void zsGoalPubRosAria::keyLoop()
 //            case KEYCODE_U:
 //
 //                break;
-//            case KEYCODE_D:
-//
-//                break;
-//            case KEYCODE_SPACE:
-//
-//                break;
+            // case KEYCODE_D:
+                
+            //     break;
+            case KEYCODE_SPACE:
+                ROS_INFO("zs: You push the SPACE button!");
+                if (cancel_goal_srv_client_.call(srv_)){
+                    ROS_INFO("zs: send cancel_goal service!");
+                }
+                break;
             case KEYCODE_Q:
                 ROS_DEBUG("QUIT");
                 ROS_INFO_STREAM("You quit the program successfully");
                 return;
                 break;
         }
-        geometry_msgs::PoseStamped zsGoal;
-        zsGoal.header.stamp = ros::Time::now();
-        zsGoal.header.frame_id = "odom";
-        zsGoal.pose.position.x = x_offset_;
-        zsGoal.pose.position.y = 0.0;
-        zsGoal.pose.position.z = 0.0;
+        geometry_msgs::Pose zsGoal;
+        zsGoal.position.x = x_offset_;
+        zsGoal.position.y = 0.0;
+        zsGoal.position.z = 0.0;
+        // zsGoal.header.stamp = ros::Time::now();
+        // zsGoal.header.frame_id = "odom";
+        // zsGoal.pose.position.x = x_offset_;
+        // zsGoal.pose.position.y = 0.0;
+        // zsGoal.pose.position.z = 0.0;
         //zs:
-        tf::quaternionTFToMsg(tf::createQuaternionFromYaw(0.0*M_PI/180), zsGoal.pose.orientation);
+        // tf::quaternionTFToMsg(tf::createQuaternionFromYaw(0.0*M_PI/180), zsGoal.pose.orientation);
+        tf::quaternionTFToMsg(tf::createQuaternionFromYaw(0.0*M_PI/180), zsGoal.orientation);
 //        twist.angular.z = a_scale_*angular_;
 //        twist.linear.x = l_scale_*linear_;
         if(dirty == true)//
         {
-            pose_pub_.publish(zsGoal);
-            ROS_INFO("zs: published a move_base_simple/goal msg and offset equals to: %lf", x_offset_);
+            goal_pub_.publish(zsGoal);
+            ROS_INFO("zs: published a move_base_action_goal msg and offset equals to: %lf", x_offset_);
+            // pose_pub_.publish(zsGoal);
+            // ROS_INFO("zs: published a move_base_simple/goal msg and offset equals to: %lf", x_offset_);
             dirty=false;
         }
     }
