@@ -28,5 +28,5 @@ roslaunch '/home/zs/Downloads/TestingPackages/sim_ws/src/rosaria_client-master/z
 # for simulator
 roscore
 roscd zs_launch_files/
-./zs_tools.sh
+./zs_tools.sh cmee
 roslaunch zs_launch_files zs_p3at_rviz_full.launch

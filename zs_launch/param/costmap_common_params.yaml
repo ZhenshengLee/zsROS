@@ -1,19 +1,19 @@
 # zs: revized for p3at based on p3at-sh-lms1xx.p file by adept mobile robots co. ltd.
 # Customized for p3at
 max_obstacle_height: 0.60  # assume something like an arm is mounted on top of the robot
-obstacle_range: 2.5
-raytrace_range: 3.0
+obstacle_range: 5.0 # 2.5
+raytrace_range: 6.0 # 3.0
 
 # Obstacle Cost Shaping (http://wiki.ros.org/costmap_2d/hydro/inflation)
 #robot_radius: 0.20  # distance a circular robot should be clear of the obstacle (kobuki: 0.18)
-robot_radius: 0.6000 # zs : 0.5000 + ptu
+robot_radius: 0.35 # zs : 0.5000 + ptu
 
 # zs: footprint is added
 footprint: [ [0.254, -0.230], [-0.254, -0.230], [-0.254, 0.230], [0.254, 0.230] ]
 
-inflation_radius: 0.50  # max. distance from an obstacle at which costs are incurred for planning paths.
+# inflation_radius: 0.50  # max. distance from an obstacle at which costs are incurred for planning paths.
 # zs: Needs to be refined
-cost_scaling_factor: 5  # exponential rate at which the obstacle cost drops off (default: 10)
+# cost_scaling_factor: 5  # exponential rate at which the obstacle cost drops off (default: 10)
 
 # voxel map configuration; z-voxels 0 are filled by bumpers and 1 by laser scan (kinect)
 
