@@ -8,6 +8,14 @@
 #include <stdio.h>
 #include "std_srvs/Empty.h"
 
+#define KEYCODE_1 0x31
+#define KEYCODE_2 0X32
+#define KEYCODE_3 0x33
+#define KEYCODE_4 0x34
+#define KEYCODE_5 0x35
+#define KEYCODE_6 0x36
+#define KEYCODE_7 0x37
+
 #define KEYCODE_R 0x43
 #define KEYCODE_L 0x44
 #define KEYCODE_U 0x41
@@ -23,6 +31,7 @@ public:
 private:
     ros::NodeHandle nh_;
     double x_offset_;
+    double y_offset_;
     ros::Publisher pose_pub_;
     ros::Publisher goal_pub_;
     ros::ServiceClient cancel_goal_srv_client_;
@@ -31,7 +40,8 @@ private:
     geometry_msgs::Pose pose_;
 };
 zsGoalPubRosAria::zsGoalPubRosAria():
-        x_offset_(1.0),
+        x_offset_(0.0),
+        y_offset_(0.0),
         srv_()
 {
     std::cout << "zsGoalPubRosAria constructing..." << std::endl;
@@ -71,7 +81,6 @@ void zsGoalPubRosAria::keyLoop()
     tcsetattr(kfd, TCSANOW, &raw);
     puts("Reading from keyboard");
     puts("---------------------------");
-    puts("Use arrow keys to move the robot.");
     puts("Use Space key to stop the moving.");
     puts("Use Left key to change the framework");
     puts("Press q to stop the program");
@@ -88,7 +97,7 @@ void zsGoalPubRosAria::keyLoop()
         switch(c)
         {
            case KEYCODE_L:
-                ROS_INFO("You push the left key");
+                ROS_INFO("You push the left key, change pose to (3.14, 3.14), do not move robot");
                 pose_.position.x = 3.14;
                 pose_.position.y = 3.14;
                 tf::quaternionTFToMsg(tf::createQuaternionFromYaw(90*M_PI/180), pose_.orientation);
@@ -97,16 +106,21 @@ void zsGoalPubRosAria::keyLoop()
             case KEYCODE_R:
                 ROS_DEBUG("RIGHT");
 //                x_offset_ += 0.5;
-                x_offset_ = 1.0;
-                ROS_INFO_STREAM("You push the RIGHT Arrow!");
+                x_offset_ += 1.0;
+                ROS_INFO_STREAM("You push the RIGHT Arrow!, will go right for 1m, move the robot");
                 dirty = true;
                 break;
-//            case KEYCODE_U:
-//
-//                break;
-            // case KEYCODE_D:
-                
-            //     break;
+            case KEYCODE_U:
+                ROS_INFO_STREAM("You push the UP Arrow key, will go up for 1 m, move the robot");
+                y_offset_+=1.0;
+                dirty=true;
+                break;
+            case KEYCODE_D:
+                ROS_INFO_STREAM("You push the down key, will go to original(0, 0), move the robot");
+                x_offset_=0.0;
+                y_offset_=0.0;
+                dirty=true;
+                break;
             case KEYCODE_SPACE:
                 ROS_INFO("zs: You push the SPACE button!");
                 if (cancel_goal_srv_client_.call(srv_)){
@@ -121,7 +135,7 @@ void zsGoalPubRosAria::keyLoop()
         }
         geometry_msgs::Pose zsGoal;
         zsGoal.position.x = x_offset_;
-        zsGoal.position.y = 0.0;
+        zsGoal.position.y = y_offset_;
         zsGoal.position.z = 0.0;
         // zsGoal.header.stamp = ros::Time::now();
         // zsGoal.header.frame_id = "odom";
