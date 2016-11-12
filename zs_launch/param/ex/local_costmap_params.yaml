@@ -15,8 +15,8 @@ local_costmap:
        - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
 
    obstacle_layer_laser:
-     observation_sources: sim_lms2xx_1_pointcloud # laser
-     sim_lms2xx_1_pointcloud: {sensor_frame: laser_frame, data_type: PointCloud, topic: /RosAria/sim_lms2xx_1_pointcloud, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
+     observation_sources: lms1xx_1_pointcloud # laser
+     lms1xx_1_pointcloud: {sensor_frame: laser_frame, data_type: PointCloud, topic: /RosAria/lms1xx_1_pointcloud, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
 #     observation_sources: lms1xx_1_pointcloud # laser
 #     sim_lms2xx_1_pointcloud: {sensor_frame: laser_frame, data_type: PointCloud, topic: /RosAria/lms1xx_1_pointcloud, marking: true, clearing: true, min_obstacle_height: 0.0, max_obstacle_height: 3}
 

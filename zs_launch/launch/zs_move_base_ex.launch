@@ -1,0 +1,4 @@
+<launch>
+    <!-- zs: Launch the zs version of move base modules-->
+    <include file="$(find zs_launch_files)/includes/move_base_ex.launch.xml"/>
+</launch>

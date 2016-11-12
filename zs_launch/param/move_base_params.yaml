@@ -21,9 +21,6 @@ oscillation_distance: 0.2
 # zs: will use a global planner
 base_global_planner: "global_planner/GlobalPlanner"
 
-# ROS_INFO("zs: ");
-# ROS_WARN("zs: ");
-# ROS_DEBUG_COND(x < 0, "Uh oh, x = %d, this is bad", x);
-# ROS_DEBUG_STREAM_COND(x < 0, "Uh oh, x = " << x << ", this is bad");
-# ROS_DEBUG_COND_NAMED(x < 0, "test_only", "Uh oh, x = %d, this is bad", x);
-# ROS_DEBUG_STREAM_COND_NAMED(x < 0, "test_only", "Uh oh, x = " << x << ", this is bad");
+
+# zs: added in 11.09
+recovery_behavior_enabled: false

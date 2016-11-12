@@ -1,7 +1,7 @@
 <launch>
 
   <!-- FOR SIMULATOR ONLY!-->
-  <!-- Launch this file before running zs_tools.sh-->
+  <!-- Launch this file after running zs_tools.sh-->
   <!--<master auto="start"/>-->
   
   <!-- Launch the zs version of rosaria -->
