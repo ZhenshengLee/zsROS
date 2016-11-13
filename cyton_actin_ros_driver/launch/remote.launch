@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- To launch this package download the cyton_gamma_1500_description package from ROS -->
+  <arg name="enable_joy" default="true"/>
+  <arg name="enable_rviz" default="true"/>
+  <arg name="enable_reconfigure" default="true"/>
+
+  <arg name="model" default="$(find cyton_gamma_1500_description)/cyton_gamma_1500.urdf"/>
+
+  <!-- Define robot description for rviz -->
+  <param name="robot_description" textfile="$(arg model)"/>
+  
+  <!--<node name="spacenav_node" pkg="spacenav_node" type="spacenav_node" output="screen" if="$(arg enable_joy)">
+  </node>-->
+
+  <!-- Create tf publisher based on joint angles -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" if="$(arg enable_rviz)"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find cyton_actin_ros_driver)/launch/cyton.rviz" if="$(arg enable_rviz)"/>
+
+  <node name="cyton_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" if="$(arg enable_reconfigure)"/>
+</launch>

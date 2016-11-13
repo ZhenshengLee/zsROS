@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="cyton_root" default="$(find cyton_actin_ros_driver)/Robai/Cyton Gamma 1500 Viewer_4.0.12-20160307"/>
+  <arg name="enable_cam" default="false"/>
+
+  <!--<node name="spacenav_node" pkg="spacenav_node" type="spacenav_node" output="screen">
+  </node>-->
+  <!--<node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" if="$(arg enable_cam)">
+    <param name="image_raw/compressed/jpeg_quality" value="20" />
+    <param name="framerate" value="20" />
+  </node>-->
+  <node name="arm_control" pkg="cyton_actin_ros_driver" type="cyton_actin_ros_driver_node" output="screen">
+    <remap from="arm_control/marker_pose" to="/pose" />
+    <!--<remap from="arm_control/joy" to="spacenav/joy"/>-->
+    <param name="simulation_file_name" type="str" value="$(arg cyton_root)/bin/cyton.ecz"/>
+    <param name="config_file_name" type="str" value="$(arg cyton_root)/bin/cytonConfig.xml"/>
+    <!-- Optional Default Joint angles -->
+    <param name="J1" type="double" value="0.0"/>
+    <param name="J2" type="double" value="0.0"/> 
+    <!---1.6-->
+    <param name="J3" type="double" value="0.0"/>
+    <param name="J4" type="double" value="0.0"/>
+    <param name="J5" type="double" value="0.0"/>
+    <param name="J6" type="double" value="0.0"/>
+    <param name="J7" type="double" value="0.0"/>
+    <param name="J8" type="double" value="0.0"/>
+    <!-- Mode is either QUAD or GROUND. In quad mode the base and gripper orientation are flipped -->
+    <param name="mode" type="string" value="QUAD"/>
+  </node>
+</launch>
