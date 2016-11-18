@@ -59,7 +59,7 @@ class ProxyNode{
         std::string start_pose_y_str_;
         std::string start_pose_th_str_;
 		move_base_msgs::MoveBaseGoal goal_;
-		double heading;
+		std_msgs::Float64 heading;
 		
 };
 
@@ -116,7 +116,7 @@ void ProxyNode::sendforceGoalCB(const geometry_msgs::Pose& goal){
 	while (!ac_->waitForResult(ros::Duration(1.0)))
 		ROS_INFO("forceGoalSending…");
 	ROS_INFO("Set Heading...");
-	heading = tf::getYaw(goal.orientation);
+	heading.data = tf::getYaw(goal.orientation);
 	zs_heading_pub_.publish(heading);
 
 }
@@ -141,7 +141,7 @@ void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
 	while (!ac_->waitForResult(ros::Duration(1.0)))
 		ROS_INFO("forceGoalSending…");
 	ROS_INFO("Set Heading...");
-	heading = goal2D.theta;
+	heading.data = goal2D.theta;
 	zs_heading_pub_.publish(heading);
 
 }
