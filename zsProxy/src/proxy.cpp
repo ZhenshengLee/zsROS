@@ -3,7 +3,6 @@
 // 1）接受服务请求，向move_base发送取消
 // 2）接收pose消息，重新配置zs_world_frame坐标系的位置
 // 3）接受move_base_goal，转发请求
-// 把heading改成其他数据形式
 #include <string>
 #include <ros/ros.h>
 #include "geometry_msgs/Pose.h"
