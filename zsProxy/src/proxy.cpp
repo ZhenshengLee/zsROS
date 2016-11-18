@@ -32,6 +32,7 @@ class ProxyNode{
         MoveBaseActionClient* ac_;
 		// publisher
 		ros::Publisher zs_heading_pub_;
+		// ros::Publisher zs_forceheading_pub_;
 		// msg subscriber
         ros::Subscriber zs_pose_sub_;
 		ros::Subscriber zs_goal_sub_;
@@ -86,6 +87,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_forcegoal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_forcegoal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendforceGoal2DCB, this, _1 ));
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("zs_heading",1);
+	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
 }
 bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){
 	ROS_INFO("cancelGoalCB");
@@ -135,11 +137,11 @@ void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
 	goal_.target_pose.pose.position.y = goal2D.y;
 	tf::quaternionTFToMsg(tf::createQuaternionFromYaw(goal2D.theta*M_PI/180), goal_.target_pose.pose.orientation);
   	ROS_INFO("Sending goal");
-  	ac_->sendGoal(goal_);
+  	ac_->sendGoal(goal_);//(boost::function <void(const geometry_msgs::Pose)>)(&ProxyNode::reconfigParameterCB, this, _1 )
 	//   不管成不成功，只要move_base执行完毕，都强制调整角度
-	while (!ac_->waitForResult(ros::Duration(1.0)))
-		ROS_INFO("forceGoalSending…");
-	ROS_INFO("Set Heading...");
+	// while (!ac_->waitForResult(ros::Duration(1.0)))
+	// 	ROS_INFO("forceGoalSending...");
+	ROS_INFO("zsProxy: Set Heading...");
 	heading.data = goal2D.theta;
 	zs_heading_pub_.publish(heading);
 
