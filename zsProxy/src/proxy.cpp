@@ -3,6 +3,14 @@
 // 1）接受服务请求，向move_base发送取消
 // 2）接收pose消息，重新配置zs_world_frame坐标系的位置
 // 3）接受move_base_goal，转发请求
+// 4) 定于rosaria/zs_pose，改造为一个pose2D发出去，回调函数里检查速度值，当都为0时设置布尔值，使得heading消息可以发送，记得延迟。
+// ros::Rate r(10);
+//   while(1)//robot->getVel()*robot->getRotVel()
+//   {
+//     ROS_INFO("can not set heading because the robot is stilling moving! (%f , %f)",lineax,rotz);
+//     ros::Duration(0.5).sleep(); // sleep for half a second
+//     // r.sleep();
+//   }
 #include <string>
 #include <ros/ros.h>
 #include "geometry_msgs/Pose.h"
@@ -40,6 +48,8 @@ class ProxyNode{
 		ros::Subscriber cancel_goal_sub_;
 		ros::Subscriber zs_goal2D_sub_;
 		ros::Subscriber zs_forcegoal2D_sub_;
+		ros::Subscriber zs_pose2D_sub_;
+		// ros::Subscriber zs_precise_sub_;
 		// srv server
         ros::ServiceServer cancel_goal_srv_;
 		// functions
@@ -50,6 +60,8 @@ class ProxyNode{
 		void sendforceGoalCB(const geometry_msgs::Pose& goal);
 		void sendGoal2DCB(const geometry_msgs::Pose2D&);
 		void sendforceGoal2DCB(const geometry_msgs::Pose2D&);
+		void reconfigParameter2DCB(const geometry_msgs::Pose2D& param);
+		// void reconfigMovebaseCB(const std_msgs::Bool& msg);
 		// another
         ros::NodeHandle nh_;
         double start_pose_x_;
@@ -85,6 +97,8 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_forcegoal_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_forcegoal", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::sendforceGoalCB, this, _1 ));
 	zs_goal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_goal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendGoal2DCB, this, _1 ));
 	zs_forcegoal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_forcegoal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendforceGoal2DCB, this, _1 ));
+	zs_pose2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_pose2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
+	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("zs_heading",1);
 	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
@@ -115,7 +129,7 @@ void ProxyNode::sendforceGoalCB(const geometry_msgs::Pose& goal){
   	ac_->sendGoal(goal_);
 	//   不管成不成功，只要move_base执行完毕，都强制调整角度
 	while (!ac_->waitForResult(ros::Duration(1.0)))
-		ROS_INFO("forceGoalSending…");
+		ROS_INFO("forceGoalSending…");//此处需要修改，move_base action server的result为空
 	ROS_INFO("Set Heading...");
 	heading.data = tf::getYaw(goal.orientation);
 	zs_heading_pub_.publish(heading);
@@ -165,6 +179,30 @@ void ProxyNode::reconfigParameterCB(const geometry_msgs::Pose& param){
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
 }
+void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
+{
+	ROS_INFO("reconfigParameter2DCB...");
+	std::stringstream ss_x, ss_y, ss_th;
+	ss_x << param.x;
+	ss_x >> start_pose_x_str_;
+	ss_y << param.y;
+	ss_y >> start_pose_y_str_;
+	ss_th << param.theta;
+	ss_th >> start_pose_th_str_;
+	// ROS_INFO(start_pose_x_str_.c_str());
+	// ROS_INFO(start_pose_y_str_.c_str());
+	// ROS_INFO(start_pose_th_str_.c_str());
+	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
+	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
+	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
+}
+// Goal Tolerance Parameters::yaw_goal_tolerance不是动态配置参数，这个需要修改move_base源代码
+// void ProxyNode::reconfigMovebaseCB(const std_msgs::Bool& msg)
+// {
+// 	ROS_INFO("reconfigMovebaseCB...");
+// 	if(msg.data)
+// 		std::system("")
+// }
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "zsProxy");
