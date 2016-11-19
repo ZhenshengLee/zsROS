@@ -44,6 +44,8 @@ public:
 public:
     int Setup();
     void cmdvel_cb( const geometry_msgs::TwistConstPtr &);
+    void cmdheading_cb(const std_msgs::Float32ConstPtr &);
+    // void cmdforceheading_cb(const std_msgs::Float32ConstPtr &);
     //void cmd_enable_motors_cb();
     //void cmd_disable_motors_cb();
     void spin();
@@ -72,6 +74,9 @@ protected:
     bool published_motors_state;
 
     ros::Subscriber cmdvel_sub;
+    // zs: subscribe heading setting
+    ros::Subscriber cmdheading_sub;
+    // ros::Subscriber cmdforceheading_sub;
 
     ros::ServiceServer enable_srv;
     ros::ServiceServer disable_srv;
@@ -140,6 +145,9 @@ protected:
     double zsstart_pose_x;
     double zsstart_pose_y;
     double zsstart_pose_th;
+    // zs: share variable 不能这样做
+    // double lineax;
+    // double rotz;
 };
 
 void RosAriaNode::readParameters()
@@ -312,6 +320,9 @@ RosAriaNode::RosAriaNode(ros::NodeHandle nh) :
         zsstart_pose_x(0.0),
         zsstart_pose_y(0.0),
         zsstart_pose_th(0.0)
+        //zs: ini shared variable
+        // lineax(0.0),
+        // rotz(0.0)
 {
   // read in runtime parameters
 
@@ -579,6 +590,10 @@ int RosAriaNode::Setup()
   cmdvel_sub = n.subscribe( "cmd_vel", 1, (boost::function <void(const geometry_msgs::TwistConstPtr&)>)
           boost::bind(&RosAriaNode::cmdvel_cb, this, _1 ));
 
+  // zs: subscribe to heading topic
+  cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
+  // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
+
   ROS_INFO_NAMED("rosaria", "rosaria: Setup complete");
   return 0;
 }
@@ -797,6 +812,9 @@ void
 RosAriaNode::cmdvel_cb( const geometry_msgs::TwistConstPtr &msg)
 {
   veltime = ros::Time::now();
+  // zs: write shared variable
+  // lineax=msg->linear.x*1e3;
+  // rotz=msg->angular.z;
   ROS_INFO( "new speed: [%0.2f,%0.2f](%0.3f)", msg->linear.x*1e3, msg->angular.z, veltime.toSec() );
 
   robot->lock();
@@ -809,6 +827,37 @@ RosAriaNode::cmdvel_cb( const geometry_msgs::TwistConstPtr &msg)
             (double) msg->linear.x * 1e3, (double) msg->linear.y * 1.3, (double) msg->angular.z * 180/M_PI);
 }
 
+// zs: callback function of topic heading, reference: directMotionExample.cpp from aria documenatation
+void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
+{
+  // headingtime = ros::Time::now();
+  ROS_INFO("new heading to %0.2f", msg->data);
+
+  robot->lock();
+  robot->setHeading(msg->data);
+  // if(robot->isHeadingDone(5))
+  // {
+  //   robot->unlock();
+  // }
+  robot->unlock();
+}
+// 此函数无效，因为robot对象不能高频读取自己的速度,具体原因不太清楚，可能是这个线程占用太多时间是的机器人循环断开了连接
+// void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
+// {
+//   // headingtime = ros::Time::now();
+//   ROS_INFO("new heading to %0.2f", msg->data);
+//   // ros::Rate r(10);
+//   while(1)//robot->getVel()*robot->getRotVel()
+//   {
+//     ROS_INFO("can not set heading because the robot is stilling moving! (%f , %f)",lineax,rotz);
+//     ros::Duration(0.5).sleep(); // sleep for half a second
+//     // r.sleep();
+//   }
+//   robot->lock();
+//   ROS_INFO("rosaria setheading!!");
+//   robot->setHeading(msg->data);
+//   robot->unlock();
+// }
 
 int main( int argc, char** argv )
 {
