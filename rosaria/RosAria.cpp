@@ -30,6 +30,8 @@
 
 #include <sstream>
 
+#include "geometry_msgs/Pose2D.h"
+
 
 // Node that interfaces between ROS and mobile robot base features via ARIA library. 
 //
@@ -44,8 +46,8 @@ public:
 public:
     int Setup();
     void cmdvel_cb( const geometry_msgs::TwistConstPtr &);
-    void cmdheading_cb(const std_msgs::Float32ConstPtr &);
-    // void cmdforceheading_cb(const std_msgs::Float32ConstPtr &);
+    void cmdheading_cb(const std_msgs::Float64ConstPtr &);
+    // void cmdforceheading_cb(const std_msgs::Float64ConstPtr &);
     //void cmd_enable_motors_cb();
     //void cmd_disable_motors_cb();
     void spin();
@@ -59,6 +61,7 @@ protected:
     ros::Publisher pose_pub;
     // zs: Send pose based on zs_world frame
     ros::Publisher zs_pose_pub;
+    ros::Publisher zs_pose2D_pub;
     ros::Publisher bumpers_pub;
     ros::Publisher sonar_pub;
     ros::Publisher sonar_pointcloud2_pub;
@@ -95,6 +98,7 @@ protected:
     nav_msgs::Odometry position;
     //zs:
     nav_msgs::Odometry zs_position;
+    geometry_msgs::Pose2D zs_position2D;
     rosaria::BumperState bumpers;
     ArPose pos;
     ArFunctorC<RosAriaNode> myPublishCB;
@@ -373,6 +377,7 @@ RosAriaNode::RosAriaNode(ros::NodeHandle nh) :
   pose_pub = n.advertise<nav_msgs::Odometry>("pose",1000);
   // zs:
   zs_pose_pub = n.advertise<nav_msgs::Odometry>("zs_pose",1000);
+  zs_pose2D_pub = n.advertise<geometry_msgs::Pose2D>("zs_pose2D",1000);
   bumpers_pub = n.advertise<rosaria::BumperState>("bumper_state",1000);
   sonar_pub = n.advertise<sensor_msgs::PointCloud>("sonar", 50,
                                                    boost::bind(&RosAriaNode::sonarConnectCb, this),
@@ -591,8 +596,8 @@ int RosAriaNode::Setup()
           boost::bind(&RosAriaNode::cmdvel_cb, this, _1 ));
 
   // zs: subscribe to heading topic
-  cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
-  // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
+  cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float64ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
+  // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float64ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
 
   ROS_INFO_NAMED("rosaria", "rosaria: Setup complete");
   return 0;
@@ -618,10 +623,15 @@ void RosAriaNode::publish()
   position.child_frame_id = frame_id_base_link;
   position.header.stamp = ros::Time::now();
   pose_pub.publish(position);
-  // zs:transform and public the msg
+  // zs:transform and publish the msg
   tf::poseTFToMsg(tf::Transform(tf::createQuaternionFromYaw((pos.getTh()+zsstart_pose_th)*M_PI/180), tf::Vector3(pos.getX()/1000+zsstart_pose_x,
                                                                                                                  pos.getY()/1000+zsstart_pose_y, 0)), zs_position.pose.pose);
   zs_pose_pub.publish(zs_position);
+
+  zs_position2D.x=pos.getX()/1000+zsstart_pose_x;
+  zs_position2D.y=pos.getY()/1000+zsstart_pose_y;
+  zs_position2D.theta=pos.getTh()+zsstart_pose_th;
+  zs_pose2D_pub.publish(zs_position2D);
 
   ROS_DEBUG("RosAria: publish: (time %f) pose x: %f, y: %f, angle: %f; linear vel x: %f, y: %f; angular vel z: %f",
             position.header.stamp.toSec(),
@@ -828,10 +838,11 @@ RosAriaNode::cmdvel_cb( const geometry_msgs::TwistConstPtr &msg)
 }
 
 // zs: callback function of topic heading, reference: directMotionExample.cpp from aria documenatation
-void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
+void RosAriaNode::cmdheading_cb(const std_msgs::Float64ConstPtr &msg)
 {
   // headingtime = ros::Time::now();
-  ROS_INFO("new heading to %0.2f", msg->data);
+  ROS_INFO("new heading to %0.2f and wait for 0s", msg->data);
+  // ros::Duration(3).sleep();
 
   robot->lock();
   robot->setHeading(msg->data);
@@ -842,7 +853,7 @@ void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
   robot->unlock();
 }
 // 此函数无效，因为robot对象不能高频读取自己的速度,具体原因不太清楚，可能是这个线程占用太多时间是的机器人循环断开了连接
-// void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
+// void RosAriaNode::cmdheading_cb(const std_msgs::Float64ConstPtr &msg)
 // {
 //   // headingtime = ros::Time::now();
 //   ROS_INFO("new heading to %0.2f", msg->data);
@@ -873,7 +884,9 @@ int main( int argc, char** argv )
     return -1;
   }
 
-  node->spin();
+  // node->spin();
+  ros::MultiThreadedSpinner s(2);
+ 	ros::spin(s);
 
   delete node;
 

@@ -49,6 +49,7 @@ class ProxyNode{
 		ros::Subscriber zs_goal2D_sub_;
 		ros::Subscriber zs_forcegoal2D_sub_;
 		ros::Subscriber zs_pose2D_sub_;
+		ros::Subscriber rosaria_pose_sub_;
 		// ros::Subscriber zs_precise_sub_;
 		// srv server
         ros::ServiceServer cancel_goal_srv_;
@@ -61,6 +62,7 @@ class ProxyNode{
 		void sendGoal2DCB(const geometry_msgs::Pose2D&);
 		void sendforceGoal2DCB(const geometry_msgs::Pose2D&);
 		void reconfigParameter2DCB(const geometry_msgs::Pose2D& param);
+		void rosaria_poseCB(const nav_msgs::Odometry);
 		// void reconfigMovebaseCB(const std_msgs::Bool& msg);
 		// another
         ros::NodeHandle nh_;
@@ -72,6 +74,7 @@ class ProxyNode{
         std::string start_pose_th_str_;
 		move_base_msgs::MoveBaseGoal goal_;
 		std_msgs::Float64 heading;
+		bool setheading;
 		
 };
 
@@ -84,7 +87,8 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	start_pose_th_(0.0),
 	start_pose_x_str_(""),
 	start_pose_y_str_(""),
-	start_pose_th_str_("")
+	start_pose_th_str_(""),
+	setheading(false)
 {
 	// ROS_INFO("zs_proxy constructing...");
 	ac_ = new MoveBaseActionClient("move_base", false);
@@ -98,9 +102,10 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_goal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_goal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendGoal2DCB, this, _1 ));
 	zs_forcegoal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_forcegoal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendforceGoal2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_pose2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
+	zs_pose2D_sub_ = nh_.subscribe<nav_msgs::Odometry>("/RosAria/pose", 1, (boost::function <void(const nav_msgs::Odometry)>)boost::bind(&ProxyNode::rosaria_poseCB, this, _1 ));
 	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
 	// msg publisher
-	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("zs_heading",1);
+	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("/RosAria/zs_heading",1);
 	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
 }
 bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){
@@ -127,9 +132,9 @@ void ProxyNode::sendforceGoalCB(const geometry_msgs::Pose& goal){
 	goal_.target_pose.pose = goal;
   	ROS_INFO("Sending goal");
   	ac_->sendGoal(goal_);
-	//   不管成不成功，只要move_base执行完毕，都强制调整角度
-	while (!ac_->waitForResult(ros::Duration(1.0)))
-		ROS_INFO("forceGoalSending…");//此处需要修改，move_base action server的result为空
+	// //   不管成不成功，只要move_base执行完毕，都强制调整角度
+	// while (!ac_->waitForResult(ros::Duration(1.0)))
+	// 	ROS_INFO("forceGoalSending…");//此处需要修改，move_base action server的result为空
 	ROS_INFO("Set Heading...");
 	heading.data = tf::getYaw(goal.orientation);
 	zs_heading_pub_.publish(heading);
@@ -155,9 +160,27 @@ void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
 	//   不管成不成功，只要move_base执行完毕，都强制调整角度
 	// while (!ac_->waitForResult(ros::Duration(1.0)))
 	// 	ROS_INFO("forceGoalSending...");
-	ROS_INFO("zsProxy: Set Heading...");
+	ROS_INFO("waiting for 2 second");
+	ros::Duration(2).sleep(); // sleep for half a second
+	while(!setheading)
+	{
+		ROS_INFO("cannot setheading because robot are moving, waiting for 0.5 second");
+		ros::Duration(0.5).sleep(); // sleep for half a second
+	}
 	heading.data = goal2D.theta;
-	zs_heading_pub_.publish(heading);
+	ROS_INFO("zsProxy: Set Heading to %f for 1 times, 0.5s after a time", heading.data);
+	for(int i=0; i<1; i++)
+	{
+		zs_heading_pub_.publish(heading);
+		// std::stringstream ss_h;
+		// std::string heading_str_;
+		// ss_h << heading.data;
+		// ss_h >> heading_str_;
+		// // rostopic pub --once my_topic std_msgs/String "hello there"
+		// // std::system(("ros"))
+		ROS_INFO("zsProxy: publish zs_heading %d", i);
+		ros::Duration(0.5).sleep();
+	}
 
 }
 void ProxyNode::reconfigParameterCB(const geometry_msgs::Pose& param){
@@ -203,13 +226,19 @@ void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
 // 	if(msg.data)
 // 		std::system("")
 // }
-
+void ProxyNode::rosaria_poseCB(const nav_msgs::Odometry msg)
+{
+	if(msg.twist.twist.linear.x==0&&msg.twist.twist.angular.z==0)
+		setheading=true;
+	else setheading=false;
+}
 int main(int argc, char** argv){
     ros::init(argc, argv, "zsProxy");
 	ros::NodeHandle n(std::string("~"));
     ProxyNode proxy(n);
     // ROS_INFO("zs: zs_proxy ini...");
-    ros::spin();
+	ros::MultiThreadedSpinner s(3);
+ 	ros::spin(s);
 
     return 0;
 }
