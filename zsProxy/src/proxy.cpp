@@ -3,14 +3,8 @@
 // 1）接受服务请求，向move_base发送取消
 // 2）接收pose消息，重新配置zs_world_frame坐标系的位置
 // 3）接受move_base_goal，转发请求
-// 4) 定于rosaria/zs_pose，改造为一个pose2D发出去，回调函数里检查速度值，当都为0时设置布尔值，使得heading消息可以发送，记得延迟。
-// ros::Rate r(10);
-//   while(1)//robot->getVel()*robot->getRotVel()
-//   {
-//     ROS_INFO("can not set heading because the robot is stilling moving! (%f , %f)",lineax,rotz);
-//     ros::Duration(0.5).sleep(); // sleep for half a second
-//     // r.sleep();
-//   }
+// 4) 订阅rosaria/zs_pose，改造为一个pose2D发出去，回调函数里检查速度值，当都为0时设置布尔值，使得heading消息可以发送，记得延迟。
+// 5) 接受/cmdvel2D,捆绑后，转发给rosaria
 #include <string>
 #include <ros/ros.h>
 #include "geometry_msgs/Pose.h"
@@ -40,6 +34,7 @@ class ProxyNode{
         MoveBaseActionClient* ac_;
 		// publisher
 		ros::Publisher zs_heading_pub_;
+		ros::Publisher zs_cmdvel_pub_;
 		// ros::Publisher zs_forceheading_pub_;
 		// msg subscriber
         ros::Subscriber zs_pose_sub_;
@@ -50,6 +45,7 @@ class ProxyNode{
 		ros::Subscriber zs_forcegoal2D_sub_;
 		ros::Subscriber zs_pose2D_sub_;
 		ros::Subscriber rosaria_pose_sub_;
+		ros::Subscriber zs_cmdvel2D_sub_;
 		// ros::Subscriber zs_precise_sub_;
 		// srv server
         ros::ServiceServer cancel_goal_srv_;
@@ -63,6 +59,7 @@ class ProxyNode{
 		void sendforceGoal2DCB(const geometry_msgs::Pose2D&);
 		void reconfigParameter2DCB(const geometry_msgs::Pose2D& param);
 		void rosaria_poseCB(const nav_msgs::Odometry);
+		void sendcmdvel2DCB(const geometry_msgs::Pose2D& msg);
 		// void reconfigMovebaseCB(const std_msgs::Bool& msg);
 		// another
         ros::NodeHandle nh_;
@@ -75,6 +72,7 @@ class ProxyNode{
 		move_base_msgs::MoveBaseGoal goal_;
 		std_msgs::Float64 heading;
 		bool setheading;
+		geometry_msgs::Twist cmdvel;
 		
 };
 
@@ -103,10 +101,19 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_forcegoal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_forcegoal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendforceGoal2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_pose2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<nav_msgs::Odometry>("/RosAria/pose", 1, (boost::function <void(const nav_msgs::Odometry)>)boost::bind(&ProxyNode::rosaria_poseCB, this, _1 ));
+	zs_cmdvel2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_cmdvel2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendcmdvel2DCB, this, _1 ));
 	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("/RosAria/zs_heading",1);
+	zs_cmdvel_pub_ = nh_.advertise<geometry_msgs::Twist>("/RosAria/cmd_vel", 1000);
 	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
+}
+void ProxyNode::sendcmdvel2DCB(const geometry_msgs::Pose2D& msg)
+{
+	cmdvel.linear.x=msg.x;
+	cmdvel.angular.z=msg.theta;
+	ROS_INFO("send cmdvel to aria ( %f, %f)", msg.x, msg.theta);
+	zs_cmdvel_pub_.publish(cmdvel);
 }
 bool ProxyNode::cancelGoalCB(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp){
 	ROS_INFO("cancelGoalCB");

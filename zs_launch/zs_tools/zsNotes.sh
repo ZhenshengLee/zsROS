@@ -38,3 +38,21 @@ roslaunch zs_launch_files zs_move_base_ex.launch
 # In third party computer
 
 roslaunch zs_launch_files zs_p3at_rviz.launch
+
+# multiple machine simulation
+# Please set IP before everything OK
+# Test your Proxy
+
+# better launch
+roscore
+
+roscd zs_launch_files/
+./zs_tools.sh cmee
+
+roslaunch zs_launch_files zs_rosaria.launch
+
+roslaunch zs_launch_files zs_proxy.launch
+
+roslaunch zs_launch_files zs_move_base.launch
+
+roslaunch zs_launch_files zs_client.launch
