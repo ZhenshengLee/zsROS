@@ -45,6 +45,7 @@ public:
     int Setup();
     void cmdvel_cb( const geometry_msgs::TwistConstPtr &);
     void cmdheading_cb(const std_msgs::Float32ConstPtr &);
+    void cmdmovetozero_cb(const std_msgs::BoolConstPtr &);
     // void cmdforceheading_cb(const std_msgs::Float32ConstPtr &);
     //void cmd_enable_motors_cb();
     //void cmd_disable_motors_cb();
@@ -77,6 +78,7 @@ protected:
     // zs: subscribe heading setting
     ros::Subscriber cmdheading_sub;
     // ros::Subscriber cmdforceheading_sub;
+    ros::Subscriber cmdmovetozero_sub;
 
     ros::ServiceServer enable_srv;
     ros::ServiceServer disable_srv;
@@ -96,6 +98,8 @@ protected:
     //zs:
     nav_msgs::Odometry zs_position;
     rosaria::BumperState bumpers;
+    ArPose zeroPose;
+
     ArPose pos;
     ArFunctorC<RosAriaNode> myPublishCB;
     //ArRobot::ChargeState batteryCharge;
@@ -319,7 +323,8 @@ RosAriaNode::RosAriaNode(ros::NodeHandle nh) :
         //zs: add ini list
         zsstart_pose_x(0.0),
         zsstart_pose_y(0.0),
-        zsstart_pose_th(0.0)
+        zsstart_pose_th(0.0),
+        zeroPose(0,0,0)
         //zs: ini shared variable
         // lineax(0.0),
         // rotz(0.0)
@@ -593,6 +598,7 @@ int RosAriaNode::Setup()
   // zs: subscribe to heading topic
   cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
   // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
+  cmdmovetozero_sub = n.subscribe("zs_movetozero", 1, (boost::function <void(const std_msgs::BoolConstPtr &)>) boost::bind(&RosAriaNode::cmdmovetozero_cb, this, _1));
 
   ROS_INFO_NAMED("rosaria", "rosaria: Setup complete");
   return 0;
@@ -858,7 +864,19 @@ void RosAriaNode::cmdheading_cb(const std_msgs::Float32ConstPtr &msg)
 //   robot->setHeading(msg->data);
 //   robot->unlock();
 // }
-
+void RosAriaNode::cmdmovetozero_cb(const std_msgs::BoolConstPtr &msg)
+{
+  if(msg->data)
+  {
+    zeroPose.setX(0.0);
+    zeroPose.setY(0.0);
+    zeroPose.setTh(robot->getTh());
+    ROS_INFO("robot's odometry changes stored position to (0, 0, %f)", zeroPose.getTh());
+    robot->lock();
+    robot->moveTo(zeroPose);
+    robot->unlock();
+  }
+}
 int main( int argc, char** argv )
 {
   ros::init(argc,argv, "RosAria");
