@@ -56,3 +56,5 @@ roslaunch zs_launch_files zs_proxy.launch
 roslaunch zs_launch_files zs_move_base.launch
 
 roslaunch zs_launch_files zs_client.launch
+
+# launch in experiment in real robot!!
