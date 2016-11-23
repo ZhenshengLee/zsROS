@@ -46,7 +46,7 @@ public:
 public:
     int Setup();
     void cmdvel_cb( const geometry_msgs::TwistConstPtr &);
-    void cmdheading_cb(const std_msgs::Float32ConstPtr &);
+    void cmdheading_cb(const std_msgs::Float64ConstPtr &);
     void cmdmovetozero_cb(const std_msgs::BoolConstPtr &);
     // void cmdforceheading_cb(const std_msgs::Float32ConstPtr &);
     //void cmd_enable_motors_cb();
@@ -601,7 +601,7 @@ int RosAriaNode::Setup()
           boost::bind(&RosAriaNode::cmdvel_cb, this, _1 ));
 
   // zs: subscribe to heading topic
-  cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
+  cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float64ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
   // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
   cmdmovetozero_sub = n.subscribe("zs_movetozero", 1, (boost::function <void(const std_msgs::BoolConstPtr &)>) boost::bind(&RosAriaNode::cmdmovetozero_cb, this, _1));
 
