@@ -7,6 +7,7 @@ echo "Launching MobileSim with the default map"
 echo "Launching rqt_tools"
 rqt_graph &
 rqt_console &
+rqt &
 echo "Launching RViz"
 roslaunch zs_launch_files zs_p3at_rviz.launch
 echo "Finishing!"

@@ -1,11 +1,11 @@
 <launch>
 	<node pkg="zsProxy" type="zsProxy" name="zsProxy" output="screen">
-		<remap from="/zsProxy/zs_pose"  to="/zs_pose" />
+		<remap from="/zsProxy/zs_tf"  to="/zs_tf" />
 		<remap from="/zsProxy/zs_goal"	to="/zs_goal" />
 		<remap from="/zsProxy/zs_cancel" to="/zs_cancel" />
 		<remap from="/zsProxy/zs_cmdvel2D" to="/zs_cmdvel2D" />
 		<remap from="/zsProxy/zs_movetozero" to="/zs_movetozero"/>
-		<remap from="/zsProxy/zs_pose2D" to="/zs_pose2D"/>
+		<remap from="/zsProxy/zs_tf2D" to="/zs_tf2D"/>
 		<remap from="/zsProxy/zs_goal2D" to="/zs_goal2D"/>
 		<remap from="/zsProxy/zs_forcegoal2D" to="/zs_forcegoal2D"/>
 	</node>

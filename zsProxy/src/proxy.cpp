@@ -38,7 +38,7 @@ class ProxyNode{
 		ros::Publisher zs_movetozero_pub_;
 		// ros::Publisher zs_forceheading_pub_;
 		// msg subscriber
-        ros::Subscriber zs_pose_sub_;
+        ros::Subscriber zs_tf_sub_;
 		ros::Subscriber zs_goal_sub_;
 		ros::Subscriber zs_forcegoal_sub_;
 		ros::Subscriber cancel_goal_sub_;
@@ -47,6 +47,7 @@ class ProxyNode{
 		ros::Subscriber zs_pose2D_sub_;
 		ros::Subscriber rosaria_pose_sub_;
 		ros::Subscriber zs_cmdvel2D_sub_;
+		ros::Subscriber zs_tf2D_sub_;
 		// ros::Subscriber zs_precise_sub_;
 		// srv server
         ros::ServiceServer cancel_goal_srv_;
@@ -95,13 +96,13 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	//srv server
 	cancel_goal_srv_ = nh_.advertiseService("cancel_goal", &ProxyNode::cancelGoalCB, this);
 	// msg subscriber
-	zs_pose_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_pose", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::reconfigParameterCB, this, _1 ));
+	zs_tf_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_tf", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::reconfigParameterCB, this, _1 ));
 	zs_goal_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_goal", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::sendGoalCB, this, _1 ));
 	cancel_goal_sub_ = nh_.subscribe<std_msgs::Bool>("zs_cancel", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::cancelGoalMsgCB, this, _1 ));
 	zs_forcegoal_sub_ = nh_.subscribe<geometry_msgs::Pose>("zs_forcegoal", 1, (boost::function <void(const geometry_msgs::Pose)>)boost::bind(&ProxyNode::sendforceGoalCB, this, _1 ));
 	zs_goal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_goal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendGoal2DCB, this, _1 ));
 	zs_forcegoal2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_forcegoal2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendforceGoal2DCB, this, _1 ));
-	zs_pose2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_pose2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
+	zs_tf2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_tf2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<nav_msgs::Odometry>("/RosAria/pose", 1, (boost::function <void(const nav_msgs::Odometry)>)boost::bind(&ProxyNode::rosaria_poseCB, this, _1 ));
 	zs_cmdvel2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_cmdvel2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendcmdvel2DCB, this, _1 ));
 	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
@@ -225,10 +226,12 @@ void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
 	// ROS_INFO(start_pose_x_str_.c_str());
 	// ROS_INFO(start_pose_y_str_.c_str());
 	// ROS_INFO(start_pose_th_str_.c_str());
+	ROS_INFO_STREAM("dynamic_reconfigure to place ("<< start_pose_x_str_ << ", " << start_pose_y_str_ << ", " << start_pose_th_str_ << " )");
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
 	movetozero.data=true;
+	ROS_INFO("robot Odometry move to zero");
 	zs_movetozero_pub_.publish(movetozero);
 }
 // Goal Tolerance Parameters::yaw_goal_tolerance不是动态配置参数，这个需要修改move_base源代码
