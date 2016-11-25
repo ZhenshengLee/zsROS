@@ -6,8 +6,8 @@
 		<remap from="/zsProxy/zs_cmdvel2D" to="/zs_cmdvel2D" />
 		<remap from="/zsProxy/zs_movetozero" to="/zs_movetozero"/>
 		<remap from="/zsProxy/zs_pose2D" to="/zs_pose2D"/>
-		<remap from="zsProxy/zs_goal2D" to="/zs_goal2D"/>
-		<remap from="zsProxy/zs_forcegoal2D" to="/zs_forcegoal2D"/>
+		<remap from="/zsProxy/zs_goal2D" to="/zs_goal2D"/>
+		<remap from="/zsProxy/zs_forcegoal2D" to="/zs_forcegoal2D"/>
 	</node>
 	<include file="$(find rosbridge_server)/launch/rosbridge_tcp.launch">
 		<arg name="port"	value="9090"/>
