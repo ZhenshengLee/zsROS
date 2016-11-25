@@ -35,6 +35,7 @@ class ProxyNode{
 		// publisher
 		ros::Publisher zs_heading_pub_;
 		ros::Publisher zs_cmdvel_pub_;
+		ros::Publisher zs_movetozero_pub_;
 		// ros::Publisher zs_forceheading_pub_;
 		// msg subscriber
         ros::Subscriber zs_pose_sub_;
@@ -72,6 +73,7 @@ class ProxyNode{
 		move_base_msgs::MoveBaseGoal goal_;
 		std_msgs::Float64 heading;
 		bool setheading;
+		std_msgs::Bool movetozero;
 		geometry_msgs::Twist cmdvel;
 		
 };
@@ -106,6 +108,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("/RosAria/zs_heading",1);
 	zs_cmdvel_pub_ = nh_.advertise<geometry_msgs::Twist>("/RosAria/cmd_vel", 1000);
+	zs_movetozero_pub_ = nh_.advertise<std_msgs::Bool>("/RosAria/zs_movetozero", 1);
 	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
 }
 void ProxyNode::sendcmdvel2DCB(const geometry_msgs::Pose2D& msg)
@@ -225,6 +228,8 @@ void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
 	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
+	movetozero.data=true;
+	zs_movetozero_pub_.publish(movetozero);
 }
 // Goal Tolerance Parameters::yaw_goal_tolerance不是动态配置参数，这个需要修改move_base源代码
 // void ProxyNode::reconfigMovebaseCB(const std_msgs::Bool& msg)
