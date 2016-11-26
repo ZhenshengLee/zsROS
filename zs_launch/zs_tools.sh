@@ -17,6 +17,7 @@ echo "Launching MobileSim with the default map"
 echo "Launching rqt_tools"
 rqt_graph &
 rqt_console &
+rqt &
 # zs: MUST RUN roscore HERE; DO NOT RUN MASTER AUTOMATICALLY
 # echo "Launching roscore"
 # roscore &
