@@ -157,7 +157,7 @@ void ProxyNode::sendGoal2DCB(const geometry_msgs::Pose2D& goal2D){
 	goal_.target_pose.pose.position.x = goal2D.x;
 	goal_.target_pose.pose.position.y = goal2D.y;
 	tf::quaternionTFToMsg(tf::createQuaternionFromYaw(goal2D.theta*M_PI/180), goal_.target_pose.pose.orientation);
-  	ROS_INFO("Sending goal");
+  	ROS_INFO_STREAM("Sending goal to " << "( " << goal_.target_pose.pose.position.x << ", " << goal_.target_pose.pose.position.y << ", " << goal2D.theta << " )");
   	ac_->sendGoal(goal_);
 }
 void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
@@ -166,7 +166,7 @@ void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
 	goal_.target_pose.pose.position.x = goal2D.x;
 	goal_.target_pose.pose.position.y = goal2D.y;
 	tf::quaternionTFToMsg(tf::createQuaternionFromYaw(goal2D.theta*M_PI/180), goal_.target_pose.pose.orientation);
-  	ROS_INFO("Sending goal");
+  	ROS_INFO_STREAM("Sending forcegoal to " << "( " << goal_.target_pose.pose.position.x << ", " << goal_.target_pose.pose.position.y << ", " << goal2D.theta << " )");
   	ac_->sendGoal(goal_);//(boost::function <void(const geometry_msgs::Pose)>)(&ProxyNode::reconfigParameterCB, this, _1 )
 	//   不管成不成功，只要move_base执行完毕，都强制调整角度
 	// while (!ac_->waitForResult(ros::Duration(1.0)))
