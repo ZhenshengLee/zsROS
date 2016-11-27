@@ -33,8 +33,8 @@ global_costmap:
 #       sick_lms1xx: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true, obstacle_range: 10.0, raytrace_range: 12.0, inf_is_valid: true}
 
    inflation_layer:
-     inflation_radius: 0.35
-     cost_scaling_factor: 100 # 4
+     inflation_radius: 0.55
+     cost_scaling_factor: 4.0 # 100
 
 #   plugins:
 #         - {name: obstacle_layer_kinect,        type: "costmap_2d::VoxelLayer"}
