@@ -7,7 +7,7 @@ local_costmap:
    rolling_window: true
    width: 6.0
    height: 6.0
-   resolution: 0.25 # 0.5 # 0.025
+   resolution: 0.025 # 0.5 # 0.025
    transform_tolerance: 0.5
    # zs: Moved to cost_map_common_params
    plugins:

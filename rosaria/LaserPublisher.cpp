@@ -8,6 +8,7 @@
 #include "LaserPublisher.h"
 #include "ArTimeToROSTime.h"
 
+#include <math.h>
 
 // TODO publish pointcloud of cumulative readings in separate topic?
 // TODO generic pointcloud sensor publisher (seprate point cloud stuff there)
@@ -50,13 +51,23 @@ LaserPublisher::LaserPublisher(ArLaser *_l, ros::NodeHandle& _n, bool _broadcast
   laserscan.header.frame_id = "laser_frame";
   laserscan.angle_min = ArMath::degToRad(laser->getStartDegrees());
   laserscan.angle_max = ArMath::degToRad(laser->getEndDegrees());
-  laserscan.angle_increment = ArMath::degToRad(laser->getIncrement());
   //laserscan.time_increment = ?
   laserscan.range_min = 0; //laser->getMinRange() / 1000.0;
   laserscan.range_max = laser->getMaxRange() / 1000.0;
   pointcloud.header.frame_id = globaltfname;
+  
+  // Get angle_increment of the laser
+  laserscan.angle_increment = 0;
+  if(laser->canSetIncrement()) {
+    laserscan.angle_increment = laser->getIncrement();
+  }
+  else if(laser->getIncrementChoice() != NULL) {
+    laserscan.angle_increment = laser->getIncrementChoiceDouble();
+  }
+  assert(laserscan.angle_increment > 0);
+  laserscan.angle_increment *= M_PI/180.0;
 
-  readingsCallbackTime = new ArTime;
+  //readingsCallbackTime = new ArTime;
 }
 
 LaserPublisher::~LaserPublisher()
@@ -64,7 +75,7 @@ LaserPublisher::~LaserPublisher()
   laser->lockDevice();
   laser->remReadingCB(&laserReadingsCB);
   laser->unlockDevice();
-  delete readingsCallbackTime;
+  //delete readingsCallbackTime;
 }
 
 void LaserPublisher::readingsCB()
@@ -88,14 +99,24 @@ void LaserPublisher::publishLaserScan()
   //printf("laserscan: %lu readings\n", readings->size());
   laserscan.ranges.resize(readings->size());
   size_t n = 0;
-  for(std::list<ArSensorReading*>::const_iterator r = readings->begin(); r != readings->end(); ++r)
-  {
-    assert(*r);
-    //printf("range %dmm extra %d\n", (*r)->getRange(), (*r)->getExtraInt());
-    laserscan.ranges[n] = (*r)->getRange() / 1000.0;
-    //laserscan.intensities[n] = (*r)->getExtraInt();
-    ++n;
+  if (laser->getFlipped()) {
+    // Reverse the data
+    for(std::list<ArSensorReading*>::const_reverse_iterator r = readings->rbegin(); r != readings->rend(); ++r)
+    {
+      assert(*r);
+      laserscan.ranges[n] = (*r)->getRange() / 1000.0;
+      ++n;
+    }
   }
+  else {
+    for(std::list<ArSensorReading*>::const_iterator r = readings->begin(); r != readings->end(); ++r)
+    {
+      assert(*r);
+      laserscan.ranges[n] = (*r)->getRange() / 1000.0;
+      ++n;
+    }
+  }
+
   laserscan_pub.publish(laserscan);
 }
 

@@ -348,15 +348,15 @@ RosAriaNode::RosAriaNode(ros::NodeHandle nh) :
   n.param( "aria_log_filename", aria_log_filename, std::string("Aria.log") );
 
   // whether to connect to lasers using aria
-  n.param("publish_aria_lasers", publish_aria_lasers, true);
-  n.param("sonar_enabled", sonar_enabled, true);//zs
-  n.param("publish_sonar", publish_sonar, true);//zs
-  n.param("publish_sonar_pointcloud2", publish_sonar_pointcloud2, true);//zs
-
+  n.param("publish_aria_lasers", publish_aria_lasers, false);
+    // n.param("sonar_enabled", sonar_enabled, true);//zs
+    // n.param("publish_sonar", publish_sonar, true);//zs
+    // n.param("publish_sonar_pointcloud2", publish_sonar_pointcloud2, true);//zs
+    // zs: 161128
   // zs: get the start pose to determine the global frame
   n.param("zsstart_pose_x", zsstart_pose_x, 0.0);
   n.param("zsstart_pose_y", zsstart_pose_y, 0.0);
-  n.param("zsstart_pose_th", zsstart_pose_th, -90.0);// -90.0 when using columbia.map
+  n.param("zsstart_pose_th", zsstart_pose_th, 0.0);// -90.0 when using columbia.map
 
   // Figure out what frame_id's to use. if a tf_prefix param is specified,
   // it will be added to the beginning of the frame_ids.
@@ -427,8 +427,8 @@ int RosAriaNode::Setup()
   ArArgumentBuilder *args = new ArArgumentBuilder(); //  never freed
   ArArgumentParser *argparser = new ArArgumentParser(args); // Warning never freed
   argparser->loadDefaultArguments(); // adds any arguments given in /etc/Aria.args.  Useful on robots with unusual serial port or baud rate (e.g. pioneer lx)
-  //zs
-  argparser->addDefaultArgument("-connectLaser");
+  //zs 161128
+  // argparser->addDefaultArgument("-connectLaser");
   // Now add any parameters given via ros params (see RosAriaNode constructor):
 
   // if serial port parameter contains a ':' character, then interpret it as hostname:tcpport
@@ -741,7 +741,8 @@ void RosAriaNode::publish()
     sensor_msgs::PointCloud cloud;	//sonar readings.
     cloud.header.stamp = position.header.stamp;	//copy time.
     // sonar sensors relative to base_link
-    // cloud.header.frame_id = frame_id_sonar;
+    cloud.header.frame_id = frame_id_sonar;
+    // zs: base_link header
     cloud.header.frame_id = frame_id_base_link;//zs
     //cloud.child_frame_id = frame_id_base_link;//zs
     //cloud2.child_frame_id = frame_id_base_link;//zs
@@ -778,7 +779,7 @@ void RosAriaNode::publish()
       p.z = 0.0;
       cloud.points.push_back(p);
     }
-    //ROS_INFO_STREAM(sonar_debug_info.str());
+    ROS_INFO_STREAM(sonar_debug_info.str());
 
     // publish topic(s)
 
@@ -902,9 +903,9 @@ int main( int argc, char** argv )
     return -1;
   }
 
-  // node->spin();
-  ros::MultiThreadedSpinner s(2);
- 	ros::spin(s);
+  node->spin();
+  // ros::MultiThreadedSpinner s(2);
+ 	// ros::spin(s);
 
   delete node;
 

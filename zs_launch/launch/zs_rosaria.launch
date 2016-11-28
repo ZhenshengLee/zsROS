@@ -4,9 +4,9 @@
   <node pkg = "rosaria" type = "RosAria" name = "RosAria">
     <param name="port" 						value="/dev/ttyUSB0" type="string"/>
     <param name="publish_aria_lasers" 		value="true"/>
-    <param name="sonar_enabled" 			value="true"/>
-    <param name="publish_sonar" 			value="true"/>
-    <param name="publish_sonar_pointcloud2" value="true"/>
+    <!--<param name="sonar_enabled" 			value="true"/>-->
+    <!--<param name="publish_sonar" 			value="true"/>-->
+    <!--<param name="publish_sonar_pointcloud2" value="true"/>-->
     <param name="zsstart_pose_x"			value="0.0"/>
     <param name="zsstart_pose_y"			value="0.0"/>
     <param name="zsstart_pose_th"			value="0.0"/>
