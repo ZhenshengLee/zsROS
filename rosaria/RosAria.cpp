@@ -63,6 +63,7 @@ protected:
     // zs: Send pose based on zs_world frame
     ros::Publisher zs_pose_pub;
     ros::Publisher zs_pose2D_pub;
+    ros::Publisher zs_vel_pub;
     ros::Publisher bumpers_pub;
     ros::Publisher sonar_pub;
     ros::Publisher sonar_pointcloud2_pub;
@@ -101,6 +102,7 @@ protected:
     //zs:
     nav_msgs::Odometry zs_position;
     geometry_msgs::Pose2D zs_position2D;
+    geometry_msgs::Pose2D zs_vel;
     rosaria::BumperState bumpers;
     ArPose zeroPose;
 
@@ -383,6 +385,7 @@ RosAriaNode::RosAriaNode(ros::NodeHandle nh) :
   // zs:
   zs_pose_pub = n.advertise<nav_msgs::Odometry>("zs_pose",1000);
   zs_pose2D_pub = n.advertise<geometry_msgs::Pose2D>("zs_pose2D",1000);
+  zs_vel_pub = n.advertise<geometry_msgs::Pose2D>("zs_vel", 1000);
   bumpers_pub = n.advertise<rosaria::BumperState>("bumper_state",1000);
   sonar_pub = n.advertise<sensor_msgs::PointCloud>("sonar", 50,
                                                    boost::bind(&RosAriaNode::sonarConnectCb, this),
@@ -630,6 +633,7 @@ void RosAriaNode::publish()
   position.header.stamp = ros::Time::now();
   pose_pub.publish(position);
   // zs:transform and publish the msg
+  // zs_position.twist.twist = position.twist.twist;
   tf::poseTFToMsg(tf::Transform(tf::createQuaternionFromYaw((pos.getTh()+zsstart_pose_th)*M_PI/180), tf::Vector3(pos.getX()/1000+zsstart_pose_x,
                                                                                                                  pos.getY()/1000+zsstart_pose_y, 0)), zs_position.pose.pose);
   zs_pose_pub.publish(zs_position);
@@ -638,6 +642,10 @@ void RosAriaNode::publish()
   zs_position2D.y=pos.getY()/1000+zsstart_pose_y;
   zs_position2D.theta=pos.getTh()+zsstart_pose_th;
   zs_pose2D_pub.publish(zs_position2D);
+
+  zs_vel.x = robot->getVel()/1000;
+	zs_vel.theta = robot->getRotVel()*M_PI/180;
+	zs_vel_pub.publish(zs_vel);
 
   ROS_DEBUG("RosAria: publish: (time %f) pose x: %f, y: %f, angle: %f; linear vel x: %f, y: %f; angular vel z: %f",
             position.header.stamp.toSec(),
