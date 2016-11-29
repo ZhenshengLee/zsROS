@@ -48,6 +48,7 @@ class ProxyNode{
 		ros::Subscriber rosaria_pose_sub_;
 		ros::Subscriber zs_cmdvel2D_sub_;
 		ros::Subscriber zs_tf2D_sub_;
+		ros::Subscriber zs_max_vel_sub_;
 		// ros::Subscriber zs_precise_sub_;
 		// srv server
         ros::ServiceServer cancel_goal_srv_;
@@ -62,6 +63,7 @@ class ProxyNode{
 		void reconfigParameter2DCB(const geometry_msgs::Pose2D& param);
 		void rosaria_poseCB(const nav_msgs::Odometry);
 		void sendcmdvel2DCB(const geometry_msgs::Pose2D& msg);
+		void reconfigmaxvel(const geometry_msgs::Pose2D& msg);
 		// void reconfigMovebaseCB(const std_msgs::Bool& msg);
 		// another
         ros::NodeHandle nh_;
@@ -76,6 +78,9 @@ class ProxyNode{
 		bool setheading;
 		std_msgs::Bool movetozero;
 		geometry_msgs::Twist cmdvel;
+		std::string max_x_str_;
+        std::string max_y_str_;
+        std::string max_th_str_;
 		
 };
 
@@ -89,7 +94,10 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	start_pose_x_str_(""),
 	start_pose_y_str_(""),
 	start_pose_th_str_(""),
-	setheading(false)
+	setheading(false),
+	max_x_str_(""),
+	max_y_str_(""),
+	max_th_str_("")
 {
 	// ROS_INFO("zs_proxy constructing...");
 	ac_ = new MoveBaseActionClient("move_base", false);
@@ -105,6 +113,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_tf2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_tf2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<nav_msgs::Odometry>("/RosAria/pose", 1, (boost::function <void(const nav_msgs::Odometry)>)boost::bind(&ProxyNode::rosaria_poseCB, this, _1 ));
 	zs_cmdvel2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_cmdvel2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendcmdvel2DCB, this, _1 ));
+	zs_max_vel_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_max_vel", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigmaxvel, this, _1 ));
 	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("/RosAria/zs_heading",1);
@@ -241,6 +250,15 @@ void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
 // 	if(msg.data)
 // 		std::system("")
 // }
+void ProxyNode::reconfigmaxvel(const geometry_msgs::Pose2D& msg)
+{
+	ROS_INFO("reconfigParameterMove_base Max Vel...");
+	std::stringstream ss_mx;
+	ss_mx << msg.x;
+	ss_mx >> max_x_str_;
+	ROS_INFO_STREAM("dynamic_reconfigure move_base/max_vel_x to " << max_x_str_);
+	std::system(("rosrun dynamic_reconfigure dynparam set move_base/TrajectoryPlannerROS max_vel_x " + max_x_str_).c_str());
+}
 void ProxyNode::rosaria_poseCB(const nav_msgs::Odometry msg)
 {
 	if(msg.twist.twist.linear.x==0&&msg.twist.twist.angular.z==0)
@@ -257,3 +275,5 @@ int main(int argc, char** argv){
 
     return 0;
 }
+
+// rosrun dynamic_reconfigure dynparam set move_base/TrajectoryPlannerROS max_vel_x 0.2
