@@ -8,7 +8,7 @@ global_costmap:
    rolling_window: true # false
    track_unknown_space: true
    width: 50.0 # 15
-   eight: 50.0 # 15
+   height: 50.0 # 15
    origin_x: 0.0
    origin_y: 0.0
    resolution: 0.1 # 0.05
