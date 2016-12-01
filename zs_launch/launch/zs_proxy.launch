@@ -8,7 +8,7 @@
 		<remap from="/zsProxy/zs_tf2D" to="/zs_tf2D"/>
 		<remap from="/zsProxy/zs_goal2D" to="/zs_goal2D"/>
 		<remap from="/zsProxy/zs_forcegoal2D" to="/zs_forcegoal2D"/>
-		<ramap form="/zsProxy/zs_maxvel" to="/zs_maxvel"/>
+		<remap from="/zsProxy/zs_maxvel" to="/zs_maxvel"/>
 	</node>
 	<include file="$(find rosbridge_server)/launch/rosbridge_tcp.launch">
 		<arg name="port"	value="9090"/>
