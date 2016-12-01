@@ -113,7 +113,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_tf2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_tf2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigParameter2DCB, this, _1 ));
 	zs_pose2D_sub_ = nh_.subscribe<nav_msgs::Odometry>("/RosAria/pose", 1, (boost::function <void(const nav_msgs::Odometry)>)boost::bind(&ProxyNode::rosaria_poseCB, this, _1 ));
 	zs_cmdvel2D_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_cmdvel2D", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::sendcmdvel2DCB, this, _1 ));
-	zs_max_vel_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_max_vel", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigmaxvel, this, _1 ));
+	zs_max_vel_sub_ = nh_.subscribe<geometry_msgs::Pose2D>("zs_maxvel", 1, (boost::function <void(const geometry_msgs::Pose2D)>)boost::bind(&ProxyNode::reconfigmaxvel, this, _1 ));
 	// zs_precise_sub_ = nh_.subscribe<std_msgs::Bool>("zs_precise", 1, (boost::function <void(const std_msgs::Bool)>)boost::bind(&ProxyNode::reconfigMovebaseCB, this, _1 ));
 	// msg publisher
 	zs_heading_pub_ = nh_.advertise<std_msgs::Float64>("/RosAria/zs_heading",1);
@@ -275,5 +275,3 @@ int main(int argc, char** argv){
 
     return 0;
 }
-
-// rosrun dynamic_reconfigure dynparam set move_base/TrajectoryPlannerROS max_vel_x 0.2
