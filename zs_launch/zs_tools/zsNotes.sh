@@ -1,4 +1,11 @@
-sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev ros-indigo-move-base
+sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev ros-indigo-move-base ros-indigo-axis-camera ros-indigo-flir-ptu-driver ros-indigo-serial
+sudo apt-get install ros-indigo-freenect-stack ros-indigo-openni* libfreenect-dev
+# for kinetic
+sudo apt install ros-kinetic-move-base
+sudo apt install ros-kinetic-freenect-stack ros-kinetic-openni* libfreenect-dev ros-kinetic-serial
+sudo apt install ros-kinetic-joy-listener ros-kinetic-joy-teleop ros-kinetic-teleop-tools ros-kinetic-teleop-twist-joy ros-kinetic-teleop-twist-keyboard
+sudo apt install ros-kinetic-lms1xx
+# This is for kinectv1, for kinectv2 please refer to github libfreenect2
 
 # set ip config in network manager
 # Address	192.168.0.4
