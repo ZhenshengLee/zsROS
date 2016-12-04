@@ -885,7 +885,8 @@ void RosAriaNode::cmdmovetozero_cb(const std_msgs::BoolConstPtr &msg)
   {
     zeroPose.setX(0.0);
     zeroPose.setY(0.0);
-    zeroPose.setTh(robot->getTh());
+    // zeroPose.setTh(robot->getTh());    
+    zeroPose.setTh(0.0);
     ROS_INFO("robot's odometry changes stored position to (0, 0, %f)", zeroPose.getTh());
     robot->lock();
     robot->moveTo(zeroPose);
