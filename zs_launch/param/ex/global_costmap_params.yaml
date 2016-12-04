@@ -7,11 +7,11 @@ global_costmap:
    transform_tolerance: 0.5
    rolling_window: true # false
    track_unknown_space: true
-   width: 50.0 # 15
-   height: 50.0 # 15
+   width: 15 # 50.0
+   height: 15 # 50.0
    origin_x: 0.0
    origin_y: 0.0
-   resolution: 0.1 # 0.05
+  #  resolution: 0.1 # 0.05
 
    plugins:
        - {name: obstacle_layer_laser, type: "costmap_2d::VoxelLayer"}
