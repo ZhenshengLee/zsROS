@@ -480,12 +480,6 @@ int RosAriaNode::Setup()
 
   if(publish_aria_lasers){
     laserConnector = new ArLaserConnector(argparser, robot, conn);
-    if(!laserConnector->connectLasers())
-    {
-      ROS_ERROR("RosAria: Could not connect to configured lasers!");
-      return 1;
-    }
-    ROS_INFO("zs: Laser connect successful!");
   }
 
   // causes ARIA to load various robot-specific hardware parameters from the robot parameter file in /usr/local/Aria/params
@@ -579,6 +573,7 @@ int RosAriaNode::Setup()
       ROS_FATAL_NAMED("rosaria", "rosaria: Error connecting to laser(s)...");
       return 1;
     }
+    ROS_INFO("zs: Laser connect successful!");
 
     robot->lock();
     const std::map<int, ArLaser*> *lasers = robot->getLaserMap();
