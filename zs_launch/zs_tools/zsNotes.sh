@@ -1,5 +1,6 @@
 sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev ros-indigo-move-base ros-indigo-axis-camera ros-indigo-flir-ptu-driver ros-indigo-serial
 sudo apt-get install ros-indigo-freenect-stack ros-indigo-openni* libfreenect-dev
+sudo apt install ros-indigo-axis-camera ros-indigo-flir-ptu-driver ros-indigo-serial ros-indigo-joy-teleop ros-indigo-teleop-tools ros-indigo-teleop-twist-joy ros-indigo-teleop-twist-keyboard ros-indigo-lms1xx
 # for kinetic
 sudo apt install ros-kinetic-move-base
 sudo apt install ros-kinetic-freenect-stack ros-kinetic-openni* libfreenect-dev ros-kinetic-serial
