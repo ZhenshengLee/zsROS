@@ -7,8 +7,8 @@ global_costmap:
    transform_tolerance: 0.5
    rolling_window: true # false
    track_unknown_space: true
-   width: 15 # 50.0
-   height: 15 # 50.0
+   width: 25 # 15 # 50.0
+   height: 25 # 15 # 50.0
    origin_x: 0.0
    origin_y: 0.0
   #  resolution: 0.1 # 0.05
