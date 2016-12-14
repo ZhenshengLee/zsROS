@@ -6,7 +6,7 @@ sudo apt install ros-kinetic-freenect-stack ros-kinetic-openni* libfreenect-dev 
 sudo apt install ros-kinetic-joy-listener ros-kinetic-joy-teleop ros-kinetic-teleop-tools ros-kinetic-teleop-twist-joy ros-kinetic-teleop-twist-keyboard
 sudo apt install ros-kinetic-lms1xx
 # This is for kinectv1, for kinectv2 please refer to github libfreenect2
-
+sudo apt install ros-kinetic-rosbridge-suite
 # set ip config in network manager
 # Address	192.168.0.4
 # Netmask	192.0.255.255(automatically become 192.0.0.0, could work but I don't know why)
