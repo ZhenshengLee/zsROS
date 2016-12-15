@@ -270,7 +270,7 @@ int main(int argc, char** argv){
 	ros::NodeHandle n(std::string("~"));
     ProxyNode proxy(n);
     // ROS_INFO("zs: zs_proxy ini...");
-	ros::MultiThreadedSpinner s(3);
+	ros::MultiThreadedSpinner s(4);
  	ros::spin(s);
 
     return 0;
