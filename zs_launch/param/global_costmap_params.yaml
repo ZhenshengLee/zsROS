@@ -6,7 +6,7 @@ global_costmap:
    static_map: false
    transform_tolerance: 0.5
    rolling_window: true # false
-   track_unknown_space: true
+   track_unknown_space: true # false
    width: 30 # 50.0 # 15
    height: 30 # 50.0 # 15
    origin_x: 0.0
@@ -15,7 +15,7 @@ global_costmap:
 
    plugins:
        - {name: obstacle_layer_laser, type: "costmap_2d::VoxelLayer"}
-       - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+      #  - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
 
    obstacle_layer_laser:
      observation_sources: sim_lms2xx_1_pointcloud # sonar
