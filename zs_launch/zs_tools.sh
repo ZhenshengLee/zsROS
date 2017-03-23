@@ -16,7 +16,7 @@ echo "Launching MobileSim with the default map"
 # /usr/local/MobileSim/MobileSim -m $PWD/zs_tools/cmee.map -r p3at &
 echo "Launching rqt_tools"
 rqt_graph &
-rqt_console &
+# rqt_console &
 rqt &
 # zs: MUST RUN roscore HERE; DO NOT RUN MASTER AUTOMATICALLY
 # echo "Launching roscore"

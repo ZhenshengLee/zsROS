@@ -4,21 +4,21 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /TF1/Frames1
-        - /sim_Group1/sim_lm2xx_LaserScan1
-        - /local_planner_Group1
-        - /local_cost_map_Group1
+        - /Global Options1
+        - /Grid1/Offset1
+        - /sim_Group1/sim_lms2xx_PointCloud1
         - /local_cost_map_Group1/local_cost_Map1
+        - /local_cost_map_Group1/local_cost_Map1/Status1
         - /actual_Group1/actual_lms1xx_1_PointCloud1
         - /global_planner_Group1
         - /global_cost_map_Group1
-        - /global_cost_map_Group1/global_cost_Map1
-      Splitter Ratio: 0.5625
+      Splitter Ratio: 0.527415156
     Tree Height: 698
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
-    Expanded: ~
+    Expanded:
+      - /2D Pose Estimate1
     Name: Tool Properties
     Splitter Ratio: 0.588679016
   - Class: rviz/Views
@@ -34,6 +34,7 @@ Panels:
   - Class: rviz/Tool Properties
     Expanded:
       - /2D Nav Goal1
+      - /2D Pose Estimate1
     Name: Tool Properties
     Splitter Ratio: 0.5
   - Class: rviz_plugin_tutorials/Teleop
@@ -53,11 +54,11 @@ Visualization Manager:
       Name: Grid
       Normal Cell Count: 0
       Offset:
-        X: 0
-        Y: 0
+        X: 70
+        Y: 70
         Z: 0
       Plane: XY
-      Plane Cell Count: 10
+      Plane Cell Count: 180
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
@@ -173,15 +174,45 @@ Visualization Manager:
     - Angle Tolerance: 0.100000001
       Class: rviz/Odometry
       Color: 255; 25; 0
-      Enabled: false
+      Enabled: true
       Keep: 100
       Length: 0.5
       Name: Odometry
       Position Tolerance: 0.100000001
       Topic: /RosAria/pose
-      Value: false
+      Value: true
     - Class: rviz/Group
       Displays:
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 10
+            Min Value: -10
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud
+          Color: 255; 255; 255
+          Color Transformer: Intensity
+          Decay Time: 0
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: sim_lms2xx_PointCloud
+          Position Transformer: XYZ
+          Queue Size: 10
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.150000006
+          Style: Flat Squares
+          Topic: /RosAria/sim_lms2xx_1_pointcloud
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
         - Alpha: 1
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
@@ -212,36 +243,6 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: false
-        - Alpha: 1
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 10
-            Min Value: -10
-            Value: true
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/PointCloud
-          Color: 255; 255; 255
-          Color Transformer: Intensity
-          Decay Time: 0
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: sim_lms2xx_PointCloud
-          Position Transformer: XYZ
-          Queue Size: 10
-          Selectable: true
-          Size (Pixels): 3
-          Size (m): 0.00999999978
-          Style: Flat Squares
-          Topic: /RosAria/sim_lms2xx_1_pointcloud
-          Unreliable: false
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
       Enabled: true
       Name: sim_Group
     - Class: rviz/Group
@@ -547,7 +548,7 @@ Visualization Manager:
         - Alpha: 1
           Class: rviz/Map
           Color Scheme: costmap
-          Draw Behind: false
+          Draw Behind: true
           Enabled: true
           Name: global_cost_Map
           Topic: /move_base/global_costmap/costmap
@@ -585,10 +586,19 @@ Visualization Manager:
           Value: false
       Enabled: false
       Name: global_cost_map_Group
+    - Alpha: 0.699999988
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: StaticMap
+      Topic: /map
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: zsworld_frame
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -598,35 +608,35 @@ Visualization Manager:
     - Class: rviz/Select
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
-    - Class: rviz/SetInitialPose
-      Topic: /initialpose
     - Class: rviz/SetGoal
       Topic: /move_base_simple/goal
     - Class: rviz/PublishPoint
       Single click: true
       Topic: /clicked_point
+    - Class: rviz/SetInitialPose
+      Topic: initialpose
   Value: true
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 8.348279
+      Distance: 12.3750286
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 4.3038516
-        Y: -0.270755529
-        Z: -2.10964754e-06
+        X: 8.56842232
+        Y: 1.05002403
+        Z: -1.11372319e-05
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.56979632
+      Pitch: 1.44479656
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 4.66358423
+      Yaw: 4.6885829
     Saved:
       - Class: rviz/Orbit
         Distance: 10.7230997

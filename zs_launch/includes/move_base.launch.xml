@@ -1,6 +1,12 @@
 <launch>
   <arg name="odom_topic" default="odom" />
 
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find zs_launch_files)/param/map.yaml"/>
+
+  <!--- Run fake AMCL -->
+  <include file="$(find zs_launch_files)/includes/fake_amcl.launch.xml"/>
+
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find zs_launch_files)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find zs_launch_files)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
@@ -16,4 +22,5 @@
     <remap from="cmd_vel" to="RosAria/cmd_vel" />
 
   </node>
+  
 </launch>
