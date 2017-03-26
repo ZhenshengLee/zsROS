@@ -5,8 +5,9 @@ obstacle_range: 2.5 # 5.0
 raytrace_range: 3.0 # 6.0
 
 # Obstacle Cost Shaping (http://wiki.ros.org/costmap_2d/hydro/inflation)
-#robot_radius: 0.20  # distance a circular robot should be clear of the obstacle (kobuki: 0.18)
-robot_radius: 0.35 # zs : 0.5000 + ptu
+
+# the radius of the robot in meters, this parameter should only be set for circular robots, all others should use the "footprint" parameters 
+# robot_radius: 0.35 # zs : 0.5000 + ptu
 
 # zs: footprint is added
 footprint: [ [0.254, -0.230], [-0.254, -0.230], [-0.254, 0.230], [0.254, 0.230] ]
