@@ -3,9 +3,10 @@
 
   <!-- Run the map server -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(find zs_launch_files)/param/map.yaml"/>
+    <param name="frame_id"  value="zsworld_frame" type="string"/>
 
   <!--- Run fake AMCL -->
-  <include file="$(find zs_launch_files)/includes/fake_amcl.launch.xml"/>
+  <!--<include file="$(find zs_launch_files)/includes/fake_amcl.launch.xml"/>-->
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find zs_launch_files)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />

@@ -675,7 +675,7 @@ void RosAriaNode::publish()
   zsworld_trans.transform.translation.z = 0.0;
   zsworld_trans.transform.rotation = tf::createQuaternionMsgFromYaw(zsstart_pose_th*M_PI/180);
 
-  // zsworld_broadcaster.sendTransform(zsworld_trans);
+  zsworld_broadcaster.sendTransform(zsworld_trans);
   // zs: now I am trying to navigate with map, so there is no need to use such a virtual coordinator frame
 
   // getStallValue returns 2 bytes with stall bit and bumper bits, packed as (00 00 FrontBumpers RearBumpers)

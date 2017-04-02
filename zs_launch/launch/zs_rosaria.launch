@@ -7,8 +7,8 @@
     <!--<param name="sonar_enabled" 			value="true"/>-->
     <!--<param name="publish_sonar" 			value="true"/>-->
     <!--<param name="publish_sonar_pointcloud2" value="true"/>-->
-    <param name="zsstart_pose_x"			value="0.0"/>
-    <param name="zsstart_pose_y"			value="0.0"/>
+    <param name="zsstart_pose_x"			value="1.0"/>
+    <param name="zsstart_pose_y"			value="1.0"/>
     <param name="zsstart_pose_th"			value="0.0"/>
     <!-- zs: the th value equals to the rotation degreen from world frame to odom frame-->
     <!-- zs: default is "-90" when using map columbia -->
