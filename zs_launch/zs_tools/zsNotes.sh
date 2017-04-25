@@ -65,3 +65,42 @@ roslaunch zs_launch_files zs_move_base.launch
 roslaunch zs_launch_files zs_client.launch
 
 # launch in experiment in real robot!!
+
+
+# for experiment 170425
+roscore
+
+sudo chmod a+rwx /dev/ttyS0
+roslaunch zs_launch_files zs_rosaria_ex.launch
+
+roslaunch zs_launch_files zs_joy.launch
+
+# roslaunch zs_launch_files zs_client.launch
+
+roslaunch zs_launch_files zs_move_base_ex.launch
+
+# In third party computer
+
+roslaunch zs_launch_files zs_p3at_rviz.launch
+
+# multiple machine simulation
+# Please set IP before everything OK
+# Test your Proxy
+
+# better launch
+
+# 看看能不能弄一个launch文件，机器会不会报错
+roscore
+
+sudo chmod a+rwx /dev/ttyS0
+roslaunch zs_launch_files zs_rosaria_ex.launch
+
+roslaunch zs_launch_files zs_joy_rc.launch
+
+# roslaunch zs_launch_files zs_client.launch
+
+roslaunch zs_launch_files zs_move_base_ex.launch
+
+# In third party computer
+
+roslaunch zs_launch_files zs_p3at_rviz_ex.launch

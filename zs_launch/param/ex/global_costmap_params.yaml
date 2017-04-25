@@ -1,19 +1,21 @@
 global_costmap:
-   global_frame: /odom # zsworld_frame
+   global_frame: /map
    robot_base_frame: /base_link
-   update_frequency: 2.0
-   publish_frequency: 2.0
-   static_map: false # true
+   update_frequency: 2
+   publish_frequency: 2
+   static_map: true
    transform_tolerance: 0.5
-   rolling_window: true # false
-   track_unknown_space: true # false
-   width: 25 # 15 # 50.0
-   height: 25 # 15 # 50.0
+   rolling_window: false
+   track_unknown_space: true
+   width: 148.9
+   height: 117.6
+
    origin_x: 0.0
    origin_y: 0.0
-  #  resolution: 0.1 # 0.05
+   resolution: 0.1
 
    plugins:
+       - {name: static_map, type: "costmap_2d::StaticLayer"}
        - {name: obstacle_layer_laser, type: "costmap_2d::VoxelLayer"}
        - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
 
