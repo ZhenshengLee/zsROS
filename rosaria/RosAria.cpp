@@ -48,6 +48,7 @@ public:
     void cmdvel_cb( const geometry_msgs::TwistConstPtr &);
     void cmdheading_cb(const std_msgs::Float64ConstPtr &);
     void cmdmovetozero_cb(const std_msgs::BoolConstPtr &);
+    void cmdmoveto_cb(const geometry_msgs::Pose2DConstPtr &);
     // void cmdforceheading_cb(const std_msgs::Float32ConstPtr &);
     //void cmd_enable_motors_cb();
     //void cmd_disable_motors_cb();
@@ -83,6 +84,7 @@ protected:
     ros::Subscriber cmdheading_sub;
     // ros::Subscriber cmdforceheading_sub;
     ros::Subscriber cmdmovetozero_sub;
+    ros::Subscriber cmdmoveto_sub;
 
     ros::ServiceServer enable_srv;
     ros::ServiceServer disable_srv;
@@ -602,6 +604,7 @@ int RosAriaNode::Setup()
   cmdheading_sub = n.subscribe("zs_heading", 1, (boost::function <void(const std_msgs::Float64ConstPtr &)>) boost::bind(&RosAriaNode::cmdheading_cb, this, _1));
   // cmdforceheading_sub = n.subscribe("zs_forceheading", 1, (boost::function <void(const std_msgs::Float32ConstPtr &)>) boost::bind(&RosAriaNode::cmdforceheading_cb, this, _1));
   cmdmovetozero_sub = n.subscribe("zs_movetozero", 1, (boost::function <void(const std_msgs::BoolConstPtr &)>) boost::bind(&RosAriaNode::cmdmovetozero_cb, this, _1));
+  cmdmoveto_sub = n.subscribe("zs_moveto", 1, (boost::function <void(const geometry_msgs::Pose2DConstPtr &)>) boost::bind(&RosAriaNode::cmdmoveto_cb, this, _1));
 
   ROS_INFO_NAMED("rosaria", "rosaria: Setup complete");
   return 0;
@@ -893,6 +896,17 @@ void RosAriaNode::cmdmovetozero_cb(const std_msgs::BoolConstPtr &msg)
     robot->moveTo(zeroPose);
     robot->unlock();
   }
+}
+void RosAriaNode::cmdmoveto_cb(const geometry_msgs::Pose2DConstPtr &msg)
+{
+    zeroPose.setX(msg->x);
+    zeroPose.setY(msg->y);
+    zeroPose.setTh(msg->theta);
+    ROS_INFO_STREAM("robot move to place ("<< msg->x << ", " << msg->y << ", " << msg->theta << " )");
+    robot->lock();
+    robot->moveTo(zeroPose);
+    robot->unlock();
+    // This simply changes our stored pose value, it does not cause the robot to drive.
 }
 int main( int argc, char** argv )
 {

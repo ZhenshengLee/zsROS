@@ -36,6 +36,7 @@ class ProxyNode{
 		ros::Publisher zs_heading_pub_;
 		ros::Publisher zs_cmdvel_pub_;
 		ros::Publisher zs_movetozero_pub_;
+		ros::Publisher zs_moveto_pub_;
 		// ros::Publisher zs_forceheading_pub_;
 		// msg subscriber
         ros::Subscriber zs_tf_sub_;
@@ -81,6 +82,7 @@ class ProxyNode{
 		std::string max_x_str_;
         std::string max_y_str_;
         std::string max_th_str_;
+		geometry_msgs::Pose2D moveto_;
 		
 };
 
@@ -120,6 +122,7 @@ ProxyNode::ProxyNode(ros::NodeHandle n):
 	zs_cmdvel_pub_ = nh_.advertise<geometry_msgs::Twist>("/RosAria/cmd_vel", 1000);
 	zs_movetozero_pub_ = nh_.advertise<std_msgs::Bool>("/RosAria/zs_movetozero", 1);
 	// zs_forceheading_pub_ = nh_.advertise<std_msgs::Float64>("zs_forceheading",1);
+	zs_moveto_pub_ = nh_.advertise<geometry_msgs::Pose2D>("/RosAria/zs_moveto",1);
 }
 void ProxyNode::sendcmdvel2DCB(const geometry_msgs::Pose2D& msg)
 {
@@ -161,7 +164,7 @@ void ProxyNode::sendforceGoalCB(const geometry_msgs::Pose& goal){
 
 }
 void ProxyNode::sendGoal2DCB(const geometry_msgs::Pose2D& goal2D){
-	goal_.target_pose.header.frame_id = "zsworld_frame";//odom
+	goal_.target_pose.header.frame_id = "map";// zsworld_frame
   	goal_.target_pose.header.stamp = ros::Time::now();
 	goal_.target_pose.pose.position.x = goal2D.x;
 	goal_.target_pose.pose.position.y = goal2D.y;
@@ -170,7 +173,7 @@ void ProxyNode::sendGoal2DCB(const geometry_msgs::Pose2D& goal2D){
   	ac_->sendGoal(goal_);
 }
 void ProxyNode::sendforceGoal2DCB(const geometry_msgs::Pose2D& goal2D){
-	goal_.target_pose.header.frame_id = "zsworld_frame";//odom
+	goal_.target_pose.header.frame_id = "map";// zsworld_frame
   	goal_.target_pose.header.stamp = ros::Time::now();
 	goal_.target_pose.pose.position.x = goal2D.x;
 	goal_.target_pose.pose.position.y = goal2D.y;
@@ -225,23 +228,32 @@ void ProxyNode::reconfigParameterCB(const geometry_msgs::Pose& param){
 void ProxyNode::reconfigParameter2DCB(const geometry_msgs::Pose2D& param)
 {
 	ROS_INFO("reconfigParameter2DCB...");
-	std::stringstream ss_x, ss_y, ss_th;
-	ss_x << param.x;
-	ss_x >> start_pose_x_str_;
-	ss_y << param.y;
-	ss_y >> start_pose_y_str_;
-	ss_th << param.theta;
-	ss_th >> start_pose_th_str_;
-	// ROS_INFO(start_pose_x_str_.c_str());
-	// ROS_INFO(start_pose_y_str_.c_str());
-	// ROS_INFO(start_pose_th_str_.c_str());
-	ROS_INFO_STREAM("dynamic_reconfigure to place ("<< start_pose_x_str_ << ", " << start_pose_y_str_ << ", " << start_pose_th_str_ << " )");
-	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
-	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
-	std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
-	movetozero.data=true;
-	ROS_INFO("robot Odometry move to zero");
-	zs_movetozero_pub_.publish(movetozero);
+	// std::stringstream ss_x, ss_y, ss_th;
+	// ss_x << param.x;
+	// ss_x >> start_pose_x_str_;
+	// ss_y << param.y;
+	// ss_y >> start_pose_y_str_;
+	// ss_th << param.theta;
+	// ss_th >> start_pose_th_str_;
+	// // ROS_INFO(start_pose_x_str_.c_str());
+	// // ROS_INFO(start_pose_y_str_.c_str());
+	// // ROS_INFO(start_pose_th_str_.c_str());
+	// ROS_INFO_STREAM("dynamic_reconfigure to place ("<< start_pose_x_str_ << ", " << start_pose_y_str_ << ", " << start_pose_th_str_ << " )");
+	// std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_x " + start_pose_x_str_).c_str());
+	// std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_y " + start_pose_y_str_).c_str());
+	// std::system(("rosrun dynamic_reconfigure dynparam set RosAria zsstart_pose_th "+ start_pose_th_str_).c_str());
+	// movetozero.data=true;
+	// ROS_INFO("robot Odometry move to zero");
+	// zs_movetozero_pub_.publish(movetozero);
+
+	// zs:20170601-从reconfigure到发送消息到rosaria，rosaria收到后运行moveto函数，该回调函数仍然订阅tf2D消息，故上位机不需要修改代码
+	// 传过来的数据是米m，传到aria需要转化为毫米mm
+	moveto_.x=param.x*1000;
+	moveto_.y=param.y*1000;
+	moveto_.theta=param.theta;
+	ROS_INFO_STREAM("dynamic_reconfigure to place ("<< moveto_.x << ", " << moveto_.y << ", " << moveto_.theta << " )");
+	zs_moveto_pub_.publish(moveto_);
+
 }
 // Goal Tolerance Parameters::yaw_goal_tolerance不是动态配置参数，这个需要修改move_base源代码
 // void ProxyNode::reconfigMovebaseCB(const std_msgs::Bool& msg)
