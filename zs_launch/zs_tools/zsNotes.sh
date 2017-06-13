@@ -1,5 +1,8 @@
 sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev ros-indigo-navigation ros-indigo-axis-camera ros-indigo-flir-ptu-driver ros-indigo-serial
 sudo apt-get install ros-indigo-freenect-stack ros-indigo-openni* libfreenect-dev
+sudo apt install ros-indigo-joy-listener ros-indigo-joy-teleop ros-indigo-teleop-tools ros-indigo-teleop-twist-joy ros-indigo-teleop-twist-keyboard
+sudo apt install ros-indigo-lms1xx
+sudo apt install ros-indigo-rosbridge-suite
 # for kinetic
 sudo apt install ros-kinetic-navigation
 sudo apt install ros-kinetic-freenect-stack ros-kinetic-openni* libfreenect-dev ros-kinetic-serial
@@ -73,7 +76,7 @@ roscore
 sudo chmod a+rwx /dev/ttyS0
 roslaunch zs_launch_files zs_rosaria_ex.launch
 
-roslaunch zs_launch_files zs_joy.launch
+roslaunch zs_launch_files zs_joy_rc.launch
 
 # roslaunch zs_launch_files zs_client.launch
 
